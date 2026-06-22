@@ -38,7 +38,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== SAVE THE DATE INTRO (physics-based petals) ===== */
+    /* ===== SAVE THE DATE INTRO ===== */
     .save-the-date {
       position: fixed;
       top: 0; left: 0;
@@ -93,50 +93,60 @@
     .heart-container {
       position: relative;
       width: min(320px, 80vw);
-      height: min(306px, 76.5vw);
+      height: min(320px, 80vw);
       margin: 0 auto;
     }
 
-    #heartWrap {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-
-    #petalCanvas {
-      position: absolute;
-      z-index: 2;
-    }
-
-    #textCanvas {
+    .heart-canvas-wrap {
       position: absolute;
       top: 0; left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
+    }
+
+    .heart-canvas-wrap canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+
+    #heartBg {
       z-index: 1;
     }
 
-    #evtOverlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 3;
-      cursor: none;
+    #heartCover {
+      z-index: 2;
+      cursor: crosshair;
       touch-action: none;
     }
 
-    #pp-cur {
-      position: fixed;
-      pointer-events: none;
-      z-index: 10000;
-      display: none;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,200,210,0.6) 40%, transparent 70%);
-      box-shadow: 0 0 12px rgba(255,255,255,0.5);
+    /* Hidden date behind the heart */
+    .heart-reveal {
+      position: absolute;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .heart-reveal.show { opacity: 1; }
+
+    .reveal-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 8vw, 3.5rem);
+      font-weight: 300;
+      color: var(--burgundy);
+      line-height: 1.2;
+    }
+
+    .reveal-venue {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-top: 0.5rem;
     }
 
     /* Brush instruction */
@@ -164,15 +174,6 @@
     @keyframes swipeHint {
       0%, 100% { transform: translateX(0); }
       50% { transform: translateX(12px); }
-    }
-
-    /* Confetti canvas */
-    #pp-cc {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 9998;
-      pointer-events: none;
     }
 
     /* Continue button */
@@ -204,6 +205,18 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(91, 26, 46, 0.3);
     }
+
+    /* Progress indicator */
+    .scrub-progress {
+      margin-top: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: 0.65rem;
+      color: var(--burgundy-light);
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+    .scrub-progress.hidden { opacity: 0; }
 
     /* ===== NAVIGATION (fades on scroll) ===== */
     nav {
@@ -242,423 +255,394 @@
       font-weight: 400;
       transition: color 0.3s;
     }
-    nav a:hover { color: var(--gold); }
-    .nav-divider { color: var(--gold); opacity: 0.4; font-size: 0.5rem; }
+    nav a:hover { color: var(--white); }
+    nav .nav-divider {
+      color: var(--gold);
+      font-size: 0.5rem;
+      opacity: 0.5;
+    }
 
-    /* ===== HERO ===== */
+    /* ===== HERO SECTION ===== */
     .hero {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      padding: 6rem 2rem 4rem;
-      background: linear-gradient(180deg, var(--cream) 0%, var(--gold-pale) 100%);
+      background: var(--burgundy);
       position: relative;
+      overflow: hidden;
+      text-align: center;
+      padding: 2rem;
     }
 
-    .hero-label {
-      font-size: 0.65rem;
-      letter-spacing: 0.5em;
-      color: var(--burgundy-light);
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(201, 168, 76, 0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 30%, rgba(201, 168, 76, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .hero-ornament {
+      width: 60px;
+      height: 1px;
+      background: var(--gold);
+      margin: 1.5rem auto;
+      position: relative;
+    }
+    .hero-ornament::before, .hero-ornament::after {
+      content: '◆';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gold);
+      font-size: 6px;
+    }
+    .hero-ornament::before { left: -15px; }
+    .hero-ornament::after { right: -15px; }
+
+    .hero-date {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: 0.85rem;
+      letter-spacing: 6px;
+      color: var(--gold-light);
       text-transform: uppercase;
       margin-bottom: 1rem;
     }
 
     .hero-names {
       font-family: 'Great Vibes', cursive;
-      font-size: clamp(3rem, 10vw, 6rem);
-      color: var(--burgundy);
-      line-height: 1.2;
-      margin-bottom: 0.5rem;
+      font-size: clamp(3rem, 10vw, 6.5rem);
+      color: var(--white);
+      line-height: 1.1;
+      margin: 0.5rem 0;
+    }
+    .hero-names .ampersand {
+      font-size: 0.6em;
+      color: var(--gold);
+      display: block;
+      margin: -0.1em 0;
     }
 
-    .hero-amp {
+    .hero-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: 0.75rem;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-top: 1.5rem;
+    }
+
+    .hero-location {
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
-      font-size: clamp(1.5rem, 4vw, 2.5rem);
-      color: var(--gold);
-      display: block;
-      margin: -0.3rem 0;
-    }
-
-    .hero-date {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1rem, 3vw, 1.5rem);
-      font-weight: 300;
-      color: var(--burgundy-light);
-      letter-spacing: 0.15em;
-      margin-bottom: 0.3rem;
-    }
-
-    .hero-venue {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.7rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-
-    .torn-edge {
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 100%;
-      height: 60px;
-      overflow: hidden;
-    }
-    .torn-edge svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    /* ===== COUNTDOWN ===== */
-    .countdown-section {
-      padding: 5rem 2rem;
-      text-align: center;
-      background: var(--burgundy);
-      color: var(--white);
-      position: relative;
-    }
-
-    .countdown-label {
-      font-size: 0.65rem;
-      letter-spacing: 0.5em;
-      text-transform: uppercase;
-      color: var(--gold-light);
-      margin-bottom: 2rem;
-    }
-
-    .countdown {
-      display: flex;
-      justify-content: center;
-      gap: clamp(1.5rem, 5vw, 3rem);
-      flex-wrap: wrap;
-    }
-
-    .countdown-item {
-      text-align: center;
-    }
-
-    .countdown-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.5rem, 8vw, 4.5rem);
-      font-weight: 300;
-      line-height: 1;
-      color: var(--gold-light);
-    }
-
-    .countdown-unit {
-      font-size: 0.6rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--gold);
-      opacity: 0.7;
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.7);
       margin-top: 0.5rem;
     }
 
-    .torn-edge-light {
+    .scroll-hint {
       position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 100%;
-      height: 60px;
-      overflow: hidden;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s infinite;
     }
-    .torn-edge-light svg {
-      width: 100%;
-      height: 100%;
-      display: block;
+    .scroll-hint svg {
+      width: 24px; height: 24px;
+      stroke: var(--gold-light);
+      opacity: 0.6;
     }
 
-    /* ===== SCHEDULE ===== */
-    .schedule-section {
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+      40% { transform: translateX(-50%) translateY(-8px); }
+      60% { transform: translateX(-50%) translateY(-4px); }
+    }
+
+    /* ===== TORN PAPER DIVIDER ===== */
+    .torn-divider {
+      width: 100%; overflow: hidden; line-height: 0; margin-top: -1px;
+    }
+    .torn-divider svg { display: block; width: 100%; height: auto; }
+    .torn-divider.flip { transform: scaleY(-1); margin-bottom: -1px; }
+
+    /* ===== COUNTDOWN ===== */
+    .countdown-section {
+      background: var(--cream);
       padding: 5rem 2rem;
       text-align: center;
-      background: var(--cream);
     }
+
+    .section-ornament {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1rem; margin-bottom: 1rem;
+    }
+    .section-ornament .line { width: 40px; height: 1px; background: var(--gold); }
+    .section-ornament .diamond { color: var(--gold); font-size: 8px; }
 
     .section-title {
       font-family: 'Great Vibes', cursive;
-      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-size: clamp(2rem, 5vw, 3rem);
       color: var(--burgundy);
       margin-bottom: 0.5rem;
     }
 
     .section-subtitle {
-      font-size: 0.65rem;
-      letter-spacing: 0.4em;
-      text-transform: uppercase;
-      color: var(--gold);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300; font-size: 0.75rem;
+      letter-spacing: 4px; text-transform: uppercase;
+      color: var(--burgundy-light);
       margin-bottom: 3rem;
     }
 
-    .timeline {
-      max-width: 600px;
-      margin: 0 auto;
-      position: relative;
+    .countdown {
+      display: flex; justify-content: center;
+      gap: clamp(1rem, 4vw, 3rem); flex-wrap: wrap;
     }
-
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 50%;
-      top: 0;
-      bottom: 0;
-      width: 1px;
-      background: var(--gold);
-      opacity: 0.3;
-      transform: translateX(-50%);
-    }
-
-    .timeline-item {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 3rem;
-      position: relative;
-    }
-
-    .timeline-item:nth-child(odd) {
-      flex-direction: row;
-      text-align: right;
-      padding-right: calc(50% + 2rem);
-    }
-    .timeline-item:nth-child(even) {
-      flex-direction: row-reverse;
-      text-align: left;
-      padding-left: calc(50% + 2rem);
-    }
-
-    .timeline-dot {
-      position: absolute;
-      left: 50%;
-      top: 0.5rem;
-      width: 10px;
-      height: 10px;
-      background: var(--gold);
-      border-radius: 50%;
-      transform: translateX(-50%);
-      z-index: 1;
-    }
-
-    .timeline-time {
+    .countdown-item { text-align: center; }
+    .countdown-number {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.3rem;
-      font-weight: 500;
-      color: var(--burgundy);
-      margin-bottom: 0.3rem;
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      font-weight: 300; color: var(--burgundy); line-height: 1; min-width: 2ch;
+    }
+    .countdown-label {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300; font-size: 0.65rem;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--burgundy-light); margin-top: 0.5rem;
+    }
+    .countdown-separator {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      color: var(--gold); align-self: flex-start; margin-top: 0.2rem;
     }
 
+    /* ===== LETTER SECTION ===== */
+    .letter-section {
+      background: var(--burgundy); padding: 5rem 2rem; text-align: center;
+    }
+    .letter-section .section-title { color: var(--white); }
+    .letter-section .section-subtitle { color: var(--gold-light); }
+    .letter-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+      line-height: 1.9; color: rgba(255,255,255,0.85);
+      max-width: 600px; margin: 0 auto;
+    }
+
+    /* ===== SCHEDULE ===== */
+    .schedule-section {
+      background: var(--cream); padding: 5rem 2rem; text-align: center;
+    }
+    .timeline { max-width: 500px; margin: 0 auto; position: relative; }
+    .timeline::before {
+      content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
+      width: 1px;
+      background: repeating-linear-gradient(to bottom, var(--gold) 0px, var(--gold) 4px, transparent 4px, transparent 8px);
+      transform: translateX(-50%);
+    }
+    .timeline-item {
+      display: flex; align-items: center; margin: 2.5rem 0; position: relative;
+    }
+    .timeline-item:nth-child(odd) { flex-direction: row; text-align: right; }
+    .timeline-item:nth-child(even) { flex-direction: row-reverse; text-align: left; }
+    .timeline-time {
+      flex: 1; font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem; font-weight: 300; color: var(--gold); padding: 0 1.5rem;
+    }
+    .timeline-dot {
+      width: 12px; height: 12px; background: var(--burgundy);
+      border: 2px solid var(--gold); border-radius: 50%; flex-shrink: 0; z-index: 1;
+    }
+    .timeline-content { flex: 1; padding: 0 1.5rem; }
     .timeline-event {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.1rem;
-      font-weight: 400;
-      color: var(--text-dark);
+      font-size: 1.3rem; font-weight: 500; color: var(--burgundy);
+    }
+    .timeline-detail {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300; font-size: 0.75rem; color: var(--burgundy-light); margin-top: 0.25rem;
     }
 
-    .timeline-desc {
-      font-size: 0.75rem;
-      color: var(--burgundy-light);
-      margin-top: 0.3rem;
-      line-height: 1.6;
+    /* ===== LOCATION ===== */
+    .location-section {
+      background: var(--burgundy); padding: 5rem 2rem; text-align: center;
     }
-
-    /* ===== VENUE ===== */
-    .venue-section {
-      padding: 5rem 2rem;
-      text-align: center;
-      background: var(--gold-pale);
-      position: relative;
+    .location-section .section-title { color: var(--white); }
+    .location-section .section-subtitle { color: var(--gold-light); }
+    .location-map {
+      max-width: 600px; margin: 0 auto 2rem;
+      border-radius: 8px; overflow: hidden;
+      border: 2px solid var(--gold); aspect-ratio: 16/9;
     }
-
-    .venue-photo {
-      width: min(500px, 90vw);
-      height: 300px;
-      margin: 0 auto 2rem;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 15px 40px rgba(91, 26, 46, 0.15);
-    }
-
-    .venue-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
+    .location-map img { width: 100%; height: 100%; object-fit: cover; }
     .venue-name {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.8rem;
-      font-weight: 500;
-      color: var(--burgundy);
-      margin-bottom: 0.5rem;
+      font-size: 1.8rem; font-weight: 500; color: var(--white); margin-bottom: 0.5rem;
+    }
+    .venue-address {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300; font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.6;
     }
 
-    .venue-address {
-      font-size: 0.8rem;
-      color: var(--burgundy-light);
-      letter-spacing: 1px;
+    /* ===== DRESS CODE ===== */
+    .dresscode-section {
+      background: var(--cream); padding: 5rem 2rem; text-align: center;
+    }
+    .dresscode-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2rem; max-width: 700px; margin: 0 auto;
+    }
+    .dresscode-card {
+      background: var(--white); border-radius: 8px;
+      padding: 2.5rem 1.5rem; border: 1px solid var(--gold-pale);
+    }
+    .dresscode-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; font-weight: 500; color: var(--burgundy); margin-bottom: 1rem;
+    }
+    .dresscode-card p {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300; font-size: 0.8rem; line-height: 1.8; color: var(--burgundy-light);
     }
 
     /* ===== GALLERY ===== */
     .gallery-section {
-      padding: 5rem 2rem;
-      text-align: center;
-      background: var(--cream);
+      background: var(--burgundy); padding: 5rem 2rem; text-align: center;
     }
-
+    .gallery-section .section-title { color: var(--white); }
+    .gallery-section .section-subtitle { color: var(--gold-light); }
     .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      max-width: 900px;
-      margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; max-width: 800px; margin: 0 auto;
     }
-
-    .gallery-card {
-      background: var(--white);
-      padding: 0.6rem;
-      border-radius: 4px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      transform: rotate(var(--rot, 0deg));
-      transition: transform 0.3s ease;
+    .gallery-item {
+      position: relative; aspect-ratio: 1; overflow: hidden;
+      border-radius: 4px; box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      transition: transform 0.4s ease;
     }
-    .gallery-card:hover {
-      transform: rotate(0deg) scale(1.03);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-    }
-
-    .gallery-card img {
-      width: 100%;
-      height: 280px;
-      object-fit: cover;
-      border-radius: 2px;
-    }
-
-    .gallery-card .caption {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: 0.9rem;
-      color: var(--burgundy-light);
-      padding: 0.8rem 0.3rem 0.4rem;
+    .gallery-item:nth-child(odd) { transform: rotate(-2deg); }
+    .gallery-item:nth-child(even) { transform: rotate(2deg); }
+    .gallery-item:hover { transform: rotate(0deg) scale(1.05); }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-placeholder {
+      width: 100%; height: 100%; background: var(--burgundy-light);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Great Vibes', cursive; font-size: 1.5rem;
+      color: var(--gold); border: 3px solid var(--gold);
     }
 
     /* ===== RSVP ===== */
     .rsvp-section {
-      padding: 5rem 2rem;
-      text-align: center;
-      background: var(--burgundy);
-      color: var(--white);
-      position: relative;
+      background: var(--cream); padding: 5rem 2rem; text-align: center;
     }
-
-    .rsvp-section .section-title { color: var(--gold-light); }
-    .rsvp-section .section-subtitle { color: var(--gold); }
-
-    .rsvp-form {
-      max-width: 400px;
-      margin: 0 auto;
+    .rsvp-form { max-width: 450px; margin: 0 auto; }
+    .form-group { margin-bottom: 1.5rem; text-align: left; }
+    .form-group label {
+      display: block; font-family: 'Montserrat', sans-serif;
+      font-weight: 400; font-size: 0.7rem; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--burgundy); margin-bottom: 0.5rem;
     }
-
-    .rsvp-form input,
-    .rsvp-form select {
-      width: 100%;
-      padding: 0.9rem 1.2rem;
-      margin-bottom: 1rem;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 50px;
-      background: rgba(255,255,255,0.1);
-      color: var(--white);
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.85rem;
-      outline: none;
-      transition: border-color 0.3s;
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 0.85rem 1rem;
+      border: 1px solid var(--gold-pale); border-radius: 4px;
+      font-family: 'Montserrat', sans-serif; font-size: 0.85rem;
+      font-weight: 300; color: var(--text-dark);
+      background: var(--white); transition: border-color 0.3s; outline: none;
     }
-    .rsvp-form input::placeholder {
-      color: rgba(255,255,255,0.5);
-    }
-    .rsvp-form input:focus,
-    .rsvp-form select:focus {
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
       border-color: var(--gold);
     }
-    .rsvp-form select {
-      -webkit-appearance: none;
-      appearance: none;
-      cursor: pointer;
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .rsvp-attendance {
+      display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem;
     }
-    .rsvp-form select option {
-      background: var(--burgundy-dark);
-      color: var(--white);
+    .rsvp-attendance label {
+      display: flex; align-items: center; gap: 0.5rem; cursor: pointer;
+      font-family: 'Montserrat', sans-serif; font-weight: 300;
+      font-size: 0.85rem; color: var(--burgundy);
     }
-
-    .rsvp-btn {
-      width: 100%;
-      padding: 1rem;
-      background: var(--gold);
-      color: var(--burgundy-dark);
-      border: none;
-      border-radius: 50px;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 500;
-      font-size: 0.75rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.3s ease;
+    .rsvp-attendance input[type="radio"] { accent-color: var(--burgundy); width: 16px; height: 16px; }
+    .btn-rsvp {
+      display: inline-block; padding: 1rem 3rem;
+      background: var(--burgundy); color: var(--white);
+      border: none; border-radius: 50px;
+      font-family: 'Montserrat', sans-serif; font-weight: 400;
+      font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase;
+      cursor: pointer; transition: all 0.3s ease;
     }
-    .rsvp-btn:hover {
-      background: var(--gold-light);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(201, 168, 76, 0.3);
+    .btn-rsvp:hover {
+      background: var(--burgundy-dark); transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(91, 26, 46, 0.3);
     }
-
     .rsvp-note {
-      margin-top: 1.5rem;
-      font-size: 0.75rem;
-      color: var(--gold);
-      opacity: 0.7;
-      font-style: italic;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-size: 1rem;
+      color: var(--burgundy-light); margin-top: 2rem;
+    }
+    .rsvp-success { display: none; text-align: center; padding: 2rem; }
+    .rsvp-success.show { display: block; }
+    .rsvp-success h3 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2rem; color: var(--burgundy); margin-bottom: 0.5rem;
+    }
+    .rsvp-success p {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300; font-size: 0.85rem; color: var(--burgundy-light);
+    }
+
+    /* ===== GIFT SECTION ===== */
+    .gift-section {
+      background: var(--burgundy); padding: 4rem 2rem; text-align: center;
+    }
+    .gift-section .section-title { color: var(--white); }
+    .gift-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-size: 1.1rem; line-height: 1.8;
+      color: rgba(255,255,255,0.8); max-width: 500px; margin: 0 auto;
     }
 
     /* ===== FOOTER ===== */
     footer {
-      padding: 3rem 2rem;
-      text-align: center;
-      background: var(--burgundy-dark);
-      color: var(--gold);
+      background: var(--burgundy-dark); padding: 3rem 2rem; text-align: center;
     }
-
     .footer-names {
-      font-family: 'Great Vibes', cursive;
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
+      font-family: 'Great Vibes', cursive; font-size: 2rem; color: var(--gold);
     }
-
     .footer-date {
-      font-size: 0.7rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      opacity: 0.7;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300; font-size: 0.7rem; letter-spacing: 4px;
+      text-transform: uppercase; color: rgba(255,255,255,0.5); margin-top: 0.5rem;
+    }
+    .footer-hearts {
+      margin-top: 1.5rem; color: var(--gold); font-size: 0.8rem; letter-spacing: 8px;
     }
 
     /* ===== RESPONSIVE ===== */
-    @media (max-width: 600px) {
-      .timeline::before { left: 1.5rem; }
-      .timeline-dot { left: 1.5rem; }
-      .timeline-item:nth-child(odd),
-      .timeline-item:nth-child(even) {
-        flex-direction: row;
-        text-align: left;
-        padding-left: 3.5rem;
-        padding-right: 0;
+    @media (max-width: 768px) {
+      nav { gap: 0.8rem; padding: 0 1rem; overflow-x: auto; justify-content: flex-start; }
+      nav a { font-size: 0.6rem; letter-spacing: 2px; white-space: nowrap; }
+      .timeline-item, .timeline-item:nth-child(even) {
+        flex-direction: column; text-align: center;
       }
-      .countdown { gap: 1.5rem; }
+      .timeline::before { left: 1.5rem; }
+      .timeline-time { padding: 0.5rem 0; font-size: 1.5rem; }
+      .timeline-content { padding: 0.5rem 0; }
+      .timeline-dot { position: absolute; left: calc(1.5rem - 5px); }
+      .dresscode-grid { grid-template-columns: 1fr; }
       .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-      .gallery-card img { height: 180px; }
-      nav { gap: 1rem; }
-      nav a { font-size: 0.6rem; letter-spacing: 2px; }
+      .countdown { gap: 0.8rem; }
+      .countdown-separator { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .gallery-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+      .rsvp-attendance { flex-direction: column; align-items: center; }
     }
   </style>
 </head>
@@ -671,14 +655,17 @@
     <p class="std-location">Bethsaida Garden, Nairobi</p>
 
     <div class="heart-container">
-      <div id="heartWrap">
-        <canvas id="textCanvas"></canvas>
-        <canvas id="petalCanvas"></canvas>
-        <div id="evtOverlay"></div>
+      <div class="heart-reveal" id="heartReveal">
+        <div class="reveal-date">08 · 08<br>2026</div>
+        <div class="reveal-venue">Nairobi, Kenya</div>
+      </div>
+      <div class="heart-canvas-wrap">
+        <canvas id="heartBg"></canvas>
+        <canvas id="heartCover"></canvas>
       </div>
     </div>
 
-    <div class="brush-hint" id="hintRow">
+    <div class="brush-hint" id="brushHint">
       <svg class="brush-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M14 4l8 8-10 10H4v-8L14 4z"/>
         <path d="M12.5 6.5l5 5"/>
@@ -686,14 +673,10 @@
       Brush the petals to reveal
     </div>
 
+    <div class="scrub-progress" id="scrubProgress"></div>
+
     <button class="std-continue" id="stdContinue">Enter Our Wedding</button>
   </div>
-
-  <!-- Confetti canvas -->
-  <canvas id="pp-cc"></canvas>
-
-  <!-- Custom brush cursor -->
-  <div id="pp-cur"></div>
 
   <!-- NAVIGATION (hidden until intro dismissed, fades on scroll) -->
   <nav id="mainNav">
@@ -703,7 +686,7 @@
     <span class="nav-divider">◆</span>
     <a href="#schedule">Schedule</a>
     <span class="nav-divider">◆</span>
-    <a href="#venue">Venue</a>
+    <a href="#location">Location</a>
     <span class="nav-divider">◆</span>
     <a href="#gallery">Gallery</a>
     <span class="nav-divider">◆</span>
@@ -712,437 +695,549 @@
 
   <!-- HERO -->
   <section class="hero" id="home">
-    <p class="hero-label" data-aos="fade-down">We're Getting Married</p>
-    <h1 class="hero-names" data-aos="fade-up">
-      Daniel
-      <span class="hero-amp">&</span>
-      Caroline
-    </h1>
-    <p class="hero-date" data-aos="fade-up" data-aos-delay="200">August 8, 2026</p>
-    <p class="hero-venue" data-aos="fade-up" data-aos-delay="400">Bethsaida Garden, Nairobi</p>
-    <div class="torn-edge">
-      <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
-        <path d="M0,0 L30,8 L60,2 L90,12 L120,5 L150,15 L180,3 L210,10 L240,4 L270,14 L300,6 L330,11 L360,2 L390,13 L420,7 L450,16 L480,3 L510,9 L540,5 L570,12 L600,2 L630,14 L660,6 L690,11 L720,3 L750,15 L780,4 L810,10 L840,6 L870,13 L900,2 L930,11 L960,5 L990,14 L1020,3 L1050,12 L1080,7 L1110,15 L1140,2 L1170,10 L1200,6 L1230,13 L1260,3 L1290,11 L1320,5 L1350,14 L1380,2 L1410,10 L1440,6 L1440,60 L0,60 Z" fill="var(--burgundy)"/>
+    <div data-aos="fade-down" data-aos-delay="200">
+      <p class="hero-date">08 · 08 · 2026</p>
+    </div>
+    <div class="hero-ornament" data-aos="fade-up" data-aos-delay="400"></div>
+    <div data-aos="fade-up" data-aos-delay="600">
+      <h1 class="hero-names">
+        Daniel
+        <span class="ampersand">&</span>
+        Caroline
+      </h1>
+    </div>
+    <div class="hero-ornament" data-aos="fade-up" data-aos-delay="800"></div>
+    <div data-aos="fade-down" data-aos-delay="1000">
+      <p class="hero-subtitle">Wedding Day</p>
+      <p class="hero-location">Bethsaida Garden, Nairobi</p>
+    </div>
+    <div class="scroll-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
       </svg>
     </div>
   </section>
+
+  <!-- TORN PAPER DIVIDER -->
+  <div class="torn-divider">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 L0,50 Q60,45 120,52 Q180,58 240,48 Q300,40 360,55 Q420,65 480,50 Q540,38 600,52 Q660,62 720,48 Q780,38 840,55 Q900,65 960,50 Q1020,38 1080,52 Q1140,62 1200,48 Q1260,38 1320,55 Q1380,62 1440,50 L1440,0 Z" fill="#5B1A2E"/>
+    </svg>
+  </div>
 
   <!-- COUNTDOWN -->
   <section class="countdown-section" id="countdown">
-    <p class="countdown-label" data-aos="fade-down">Counting Down</p>
-    <div class="countdown">
-      <div class="countdown-item" data-aos="fade-up" data-aos-delay="100">
-        <div class="countdown-num" id="days">0</div>
-        <div class="countdown-unit">Days</div>
-      </div>
-      <div class="countdown-item" data-aos="fade-up" data-aos-delay="200">
-        <div class="countdown-num" id="hours">0</div>
-        <div class="countdown-unit">Hours</div>
-      </div>
-      <div class="countdown-item" data-aos="fade-up" data-aos-delay="300">
-        <div class="countdown-num" id="minutes">0</div>
-        <div class="countdown-unit">Minutes</div>
-      </div>
-      <div class="countdown-item" data-aos="fade-up" data-aos-delay="400">
-        <div class="countdown-num" id="seconds">0</div>
-        <div class="countdown-unit">Seconds</div>
-      </div>
+    <div class="section-ornament" data-aos="fade-up">
+      <span class="line"></span><span class="diamond">◆</span><span class="line"></span>
     </div>
-    <div class="torn-edge-light">
-      <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
-        <path d="M0,0 L40,10 L80,3 L120,12 L160,5 L200,14 L240,2 L280,11 L320,6 L360,13 L400,3 L440,10 L480,5 L520,15 L560,2 L600,9 L640,4 L680,12 L720,6 L760,14 L800,3 L840,11 L880,5 L920,13 L960,2 L1000,10 L1040,6 L1080,14 L1120,3 L1160,11 L1200,5 L1240,13 L1280,2 L1320,10 L1360,6 L1400,14 L1440,4 L1440,60 L0,60 Z" fill="var(--cream)"/>
-      </svg>
+    <h2 class="section-title" data-aos="fade-up">The Celebration Begins In</h2>
+    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Counting down to forever</p>
+    <div class="countdown" data-aos="fade-up" data-aos-delay="200">
+      <div class="countdown-item">
+        <div class="countdown-number" id="days">---</div>
+        <div class="countdown-label">Days</div>
+      </div>
+      <div class="countdown-separator">:</div>
+      <div class="countdown-item">
+        <div class="countdown-number" id="hours">--</div>
+        <div class="countdown-label">Hours</div>
+      </div>
+      <div class="countdown-separator">:</div>
+      <div class="countdown-item">
+        <div class="countdown-number" id="minutes">--</div>
+        <div class="countdown-label">Minutes</div>
+      </div>
+      <div class="countdown-separator">:</div>
+      <div class="countdown-item">
+        <div class="countdown-number" id="seconds">--</div>
+        <div class="countdown-label">Seconds</div>
+      </div>
     </div>
   </section>
+
+  <!-- TORN PAPER -->
+  <div class="torn-divider flip">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 L0,50 Q60,45 120,52 Q180,58 240,48 Q300,40 360,55 Q420,65 480,50 Q540,38 600,52 Q660,62 720,48 Q780,38 840,55 Q900,65 960,50 Q1020,38 1080,52 Q1140,62 1200,48 Q1260,38 1320,55 Q1380,62 1440,50 L1440,0 Z" fill="#5B1A2E"/>
+    </svg>
+  </div>
+
+  <!-- LETTER -->
+  <section class="letter-section">
+    <div class="section-ornament" data-aos="fade-up">
+      <span class="line" style="background: var(--gold);"></span>
+      <span class="diamond" style="color: var(--gold);">◆</span>
+      <span class="line" style="background: var(--gold);"></span>
+    </div>
+    <h2 class="section-title" data-aos="fade-up">Dear Friends & Family</h2>
+    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">A message from our hearts</p>
+    <div class="letter-text" data-aos="fade-up" data-aos-delay="200">
+      As we get ready to say "I do," we feel grateful for the wonderful people in our lives.
+      Your support means the world to us, and we would be honored to have you with us
+      as we begin our life together. Join us for a day of love, laughter, and celebration
+      as we make this beautiful commitment before God and our loved ones.
+    </div>
+  </section>
+
+  <!-- TORN PAPER -->
+  <div class="torn-divider">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 L0,55 Q80,42 160,50 Q240,60 320,48 Q400,38 480,52 Q560,62 640,48 Q720,35 800,52 Q880,62 960,48 Q1040,38 1120,55 Q1200,62 1280,48 Q1360,40 1440,52 L1440,0 Z" fill="#5B1A2E"/>
+    </svg>
+  </div>
 
   <!-- SCHEDULE -->
   <section class="schedule-section" id="schedule">
-    <h2 class="section-title" data-aos="fade-up">Schedule</h2>
-    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Our Wedding Day</p>
-
+    <div class="section-ornament" data-aos="fade-up">
+      <span class="line"></span><span class="diamond">◆</span><span class="line"></span>
+    </div>
+    <h2 class="section-title" data-aos="fade-up">Schedule of Events</h2>
+    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">The day's programme</p>
     <div class="timeline">
       <div class="timeline-item" data-aos="fade-right">
+        <div class="timeline-time">10:00</div>
         <div class="timeline-dot"></div>
-        <div>
-          <div class="timeline-time">10:00 AM</div>
-          <div class="timeline-event">Guest Arrival</div>
-          <div class="timeline-desc">Welcome drinks and mingling</div>
+        <div class="timeline-content">
+          <div class="timeline-event">Wedding Ceremony</div>
+          <div class="timeline-detail">The "I Do's"</div>
         </div>
       </div>
       <div class="timeline-item" data-aos="fade-left">
+        <div class="timeline-time">12:00</div>
         <div class="timeline-dot"></div>
-        <div>
-          <div class="timeline-time">12:00 PM</div>
-          <div class="timeline-event">Wedding Ceremony</div>
-          <div class="timeline-desc">Exchange of vows</div>
+        <div class="timeline-content">
+          <div class="timeline-event">Cocktail Hour</div>
+          <div class="timeline-detail">Drinks & canapés</div>
         </div>
       </div>
       <div class="timeline-item" data-aos="fade-right">
+        <div class="timeline-time">14:00</div>
         <div class="timeline-dot"></div>
-        <div>
-          <div class="timeline-time">2:00 PM</div>
-          <div class="timeline-event">Lunch Reception</div>
-          <div class="timeline-desc">Food, speeches, and celebrations</div>
+        <div class="timeline-content">
+          <div class="timeline-event">Luncheon</div>
+          <div class="timeline-detail">Feast & toasts</div>
         </div>
       </div>
       <div class="timeline-item" data-aos="fade-left">
+        <div class="timeline-time">16:00</div>
         <div class="timeline-dot"></div>
-        <div>
-          <div class="timeline-time">4:00 PM</div>
-          <div class="timeline-event">Evening Party</div>
-          <div class="timeline-desc">Music, dancing, and cake cutting</div>
+        <div class="timeline-content">
+          <div class="timeline-event">Celebration</div>
+          <div class="timeline-detail">Music, dance & joy</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- VENUE -->
-  <section class="venue-section" id="venue">
-    <h2 class="section-title" data-aos="fade-up">The Venue</h2>
-    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Where We'll Say "I Do"</p>
+  <!-- TORN PAPER -->
+  <div class="torn-divider flip">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 L0,50 Q70,40 140,52 Q210,62 280,48 Q350,35 420,52 Q490,62 560,48 Q630,38 700,55 Q770,62 840,48 Q910,38 980,52 Q1050,62 1120,48 Q1190,38 1260,55 Q1330,62 1440,50 L1440,0 Z" fill="#5B1A2E"/>
+    </svg>
+  </div>
 
-    <div class="venue-photo" data-aos="zoom-in" data-aos-delay="200">
-      <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80" alt="Bethsaida Garden venue" loading="lazy">
+  <!-- LOCATION -->
+  <section class="location-section" id="location">
+    <div class="section-ornament" data-aos="fade-up">
+      <span class="line" style="background: var(--gold);"></span>
+      <span class="diamond" style="color: var(--gold);">◆</span>
+      <span class="line" style="background: var(--gold);"></span>
     </div>
-
-    <div class="venue-name" data-aos="fade-up" data-aos-delay="300">Bethsaida Garden</div>
-    <div class="venue-address" data-aos="fade-up" data-aos-delay="400">Nairobi, Kenya</div>
+    <h2 class="section-title" data-aos="fade-up">The Venue</h2>
+    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Where we'll say "I do"</p>
+    <div class="location-map" data-aos="fade-up" data-aos-delay="200">
+      <img src="bethsaida.jpg" alt="Bethsaida Garden, Nairobi">
+    </div>
+    <div data-aos="fade-up" data-aos-delay="300">
+      <p class="venue-name">Bethsaida Garden</p>
+      <p class="venue-address">Nairobi, Kenya</p>
+    </div>
   </section>
+
+  <!-- TORN PAPER -->
+  <div class="torn-divider">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 L0,52 Q90,42 180,55 Q270,62 360,48 Q450,35 540,52 Q630,62 720,48 Q810,38 900,55 Q990,62 1080,48 Q1170,38 1260,52 Q1350,60 1440,48 L1440,0 Z" fill="#5B1A2E"/>
+    </svg>
+  </div>
+
+  <!-- DRESS CODE -->
+  <section class="dresscode-section">
+    <div class="section-ornament" data-aos="fade-up">
+      <span class="line"></span><span class="diamond">◆</span><span class="line"></span>
+    </div>
+    <h2 class="section-title" data-aos="fade-up">Dress Code</h2>
+    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">What to wear</p>
+    <div class="dresscode-grid">
+      <div class="dresscode-card" data-aos="fade-right" data-aos-delay="200">
+        <h3>🤵 Gentlemen</h3>
+        <p>Well-tailored suits in navy, charcoal, or black. Classic dress shoes. Ties or bow ties welcome. Think smart and elegant.</p>
+      </div>
+      <div class="dresscode-card" data-aos="fade-left" data-aos-delay="200">
+        <h3>👗 Ladies</h3>
+        <p>Formal dresses in elegant, polished styles. Our colour palette is burgundy, gold, and white — feel free to complement. Heels or dressy flats.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TORN PAPER -->
+  <div class="torn-divider flip">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 L0,50 Q80,42 160,52 Q240,60 320,48 Q400,35 480,52 Q560,62 640,48 Q720,38 800,52 Q880,60 960,48 Q1040,38 1120,55 Q1200,62 1280,48 Q1360,40 1440,52 L1440,0 Z" fill="#5B1A2E"/>
+    </svg>
+  </div>
 
   <!-- GALLERY -->
   <section class="gallery-section" id="gallery">
-    <h2 class="section-title" data-aos="fade-up">Our Journey</h2>
-    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Moments Together</p>
-
+    <div class="section-ornament" data-aos="fade-up">
+      <span class="line" style="background: var(--gold);"></span>
+      <span class="diamond" style="color: var(--gold);">◆</span>
+      <span class="line" style="background: var(--gold);"></span>
+    </div>
+    <h2 class="section-title" data-aos="fade-up">Our Moments</h2>
+    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">A glimpse into our journey</p>
     <div class="gallery-grid">
-      <div class="gallery-card" style="--rot: -2deg" data-aos="fade-up" data-aos-delay="100">
-        <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=500&q=80" alt="Couple photo 1" loading="lazy">
-        <div class="caption">How it began</div>
-      </div>
-      <div class="gallery-card" style="--rot: 1.5deg" data-aos="fade-up" data-aos-delay="200">
-        <img src="https://images.unsplash.com/photo-1529634597503-139d3726fed5?w=500&q=80" alt="Couple photo 2" loading="lazy">
-        <div class="caption">Our adventures</div>
-      </div>
-      <div class="gallery-card" style="--rot: -1deg" data-aos="fade-up" data-aos-delay="300">
-        <img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=500&q=80" alt="Couple photo 3" loading="lazy">
-        <div class="caption">Forever starts here</div>
-      </div>
+      <div class="gallery-item" data-aos="zoom-in" data-aos-delay="100"><div class="gallery-placeholder">D & C</div></div>
+      <div class="gallery-item" data-aos="zoom-in" data-aos-delay="200"><div class="gallery-placeholder">♥</div></div>
+      <div class="gallery-item" data-aos="zoom-in" data-aos-delay="300"><div class="gallery-placeholder">D & C</div></div>
+      <div class="gallery-item" data-aos="zoom-in" data-aos-delay="150"><div class="gallery-placeholder">♥</div></div>
+      <div class="gallery-item" data-aos="zoom-in" data-aos-delay="250"><div class="gallery-placeholder">D & C</div></div>
+      <div class="gallery-item" data-aos="zoom-in" data-aos-delay="350"><div class="gallery-placeholder">♥</div></div>
     </div>
   </section>
 
+  <!-- TORN PAPER -->
+  <div class="torn-divider">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 L0,55 Q100,42 200,52 Q300,60 400,48 Q500,35 600,52 Q700,62 800,48 Q900,38 1000,55 Q1100,62 1200,48 Q1300,40 1440,52 L1440,0 Z" fill="#5B1A2E"/>
+    </svg>
+  </div>
+
   <!-- RSVP -->
   <section class="rsvp-section" id="rsvp">
-    <h2 class="section-title" data-aos="fade-up">RSVP</h2>
-    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Will You Join Us?</p>
+    <div class="section-ornament" data-aos="fade-up">
+      <span class="line"></span><span class="diamond">◆</span><span class="line"></span>
+    </div>
+    <h2 class="section-title" data-aos="fade-up">Confirm Your Attendance</h2>
+    <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Kindly RSVP before July 15, 2026</p>
+    <div class="rsvp-form" data-aos="fade-up" data-aos-delay="200" id="rsvpForm">
+      <div class="rsvp-attendance">
+        <label><input type="radio" name="attendance" value="yes" checked> Joyfully Accepts</label>
+        <label><input type="radio" name="attendance" value="no"> Regretfully Declines</label>
+      </div>
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" name="name" placeholder="Your full name" required>
+      </div>
+      <div class="form-group">
+        <label>Email Address *</label>
+        <input type="email" name="email" placeholder="your@email.com" required>
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" name="phone" placeholder="+254 ...">
+      </div>
+      <div class="form-group">
+        <label>Number of Guests</label>
+        <select name="guests">
+          <option value="1">1 Guest</option>
+          <option value="2" selected>2 Guests</option>
+          <option value="3">3 Guests</option>
+          <option value="4">4 Guests</option>
+          <option value="5+">5+ Guests</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Dietary Requirements / Message</label>
+        <textarea name="message" placeholder="Any dietary needs or a message for the couple..."></textarea>
+      </div>
+      <button type="button" class="btn-rsvp" onclick="submitRSVP()">Send RSVP</button>
+      <p class="rsvp-note">Your presence is the greatest gift to us. 💛</p>
+    </div>
+    <div class="rsvp-success" id="rsvpSuccess">
+      <h3>Thank You!</h3>
+      <p>We've received your RSVP and can't wait to celebrate with you.</p>
+    </div>
+  </section>
 
-    <form class="rsvp-form" id="rsvpForm" data-aos="fade-up" data-aos-delay="200">
-      <input type="text" name="name" placeholder="Your Full Name" required>
-      <input type="email" name="email" placeholder="Email Address" required>
-      <input type="tel" name="phone" placeholder="Phone Number">
-      <select name="attending" required>
-        <option value="" disabled selected>Will you attend?</option>
-        <option value="yes">Joyfully Accepts</option>
-        <option value="no">Respectfully Declines</option>
-      </select>
-      <select name="guests">
-        <option value="" disabled selected>Number of Guests</option>
-        <option value="1">1 Guest</option>
-        <option value="2">2 Guests</option>
-        <option value="3">3 Guests</option>
-        <option value="4">4+ Guests</option>
-      </select>
-      <button type="submit" class="rsvp-btn">Send RSVP</button>
-    </form>
-
-    <p class="rsvp-note" data-aos="fade-up" data-aos-delay="300">
-      Kindly respond by July 15, 2026<br>
-      For questions, contact: +254 XXX XXX XXX
-    </p>
+  <!-- GIFT SECTION -->
+  <div class="torn-divider flip">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 L0,50 Q80,42 160,55 Q240,62 320,48 Q400,35 480,52 Q560,62 640,48 Q720,38 800,52 Q880,60 960,48 Q1040,38 1120,55 Q1200,62 1280,48 Q1360,40 1440,52 L1440,0 Z" fill="#5B1A2E"/>
+    </svg>
+  </div>
+  <section class="gift-section">
+    <div class="section-ornament" data-aos="fade-up">
+      <span class="line" style="background: var(--gold);"></span>
+      <span class="diamond" style="color: var(--gold);">◆</span>
+      <span class="line" style="background: var(--gold);"></span>
+    </div>
+    <h2 class="section-title" data-aos="fade-up">Gifts</h2>
+    <div class="gift-text" data-aos="fade-up" data-aos-delay="100">
+      Your presence is the greatest gift of all. However, if you wish to honor us
+      with a gift, a contribution toward our future home would be sincerely appreciated.
+    </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <div class="footer-names">Daniel & Caroline</div>
+    <div class="footer-names" data-aos="fade-up">Daniel & Caroline</div>
     <div class="footer-date">August 8, 2026 · Bethsaida Garden, Nairobi</div>
+    <div class="footer-hearts">♥ ♥ ♥</div>
   </footer>
 
   <!-- SCRIPTS -->
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script>
     // ===========================
-    // SAVE THE DATE — PHYSICS-BASED PETAL BRUSH TO REVEAL
+    // SAVE THE DATE — BRUSH TO REVEAL
     // ===========================
-    (function(){
-    "use strict";
+    (function() {
+      const overlay = document.getElementById('saveTheDate');
+      const bgCanvas = document.getElementById('heartBg');
+      const coverCanvas = document.getElementById('heartCover');
+      const bgCtx = bgCanvas.getContext('2d');
+      const coverCtx = coverCanvas.getContext('2d');
+      const heartReveal = document.getElementById('heartReveal');
+      const brushHint = document.getElementById('brushHint');
+      const scrubProgress = document.getElementById('scrubProgress');
+      const continueBtn = document.getElementById('stdContinue');
 
-    // Petal sprite data (rose petal images)
-    var RAW=[
-      {w:160,h:179,src:"data:image/webp;base64,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"},
-      {w:160,h:148,src:"data:image/webp;base64,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"}
-    ];
+      const SIZE = 640; // internal canvas resolution
+      bgCanvas.width = coverCanvas.width = SIZE;
+      bgCanvas.height = coverCanvas.height = SIZE;
 
-    // Heart shape path
-    var HP="M150 272 C148 270 10 188 10 96 C10 50 46 16 90 16 C115 16 138 29 150 50 C162 29 185 16 210 16 C254 16 290 50 290 96 C290 188 152 270 150 272Z";
-
-    // Constants
-    var BR=54,PF=4.2,OFFSET=90,SW=300,CW=SW+OFFSET*2,CH=288+OFFSET*2;
-
-    // Orbit path (for remaining petals to float along)
-    var ORBIT=[[150,288],[149.55,287.7],[148.55,287.11],[147.03,286.23],[145.01,285.06],[142.53,283.61],[139.61,281.89],[136.27,279.89],[132.54,277.62],[128.44,275.07],[124,272.25],[119.26,269.16],[114.23,265.8],[108.95,262.16],[103.44,258.24],[97.75,254.04],[91.91,249.57],[85.96,244.82],[79.94,239.8],[73.89,234.52],[67.86,228.98],[61.87,223.22],[55.98,217.23],[50.22,211.05],[44.61,204.7],[39.2,198.19],[34.02,191.55],[29.12,184.78],[24.52,177.91],[20.25,170.95],[16.34,163.93],[12.82,156.87],[9.71,149.78],[7.03,142.69],[4.81,135.62],[3.07,128.59],[1.83,121.62],[1.1,114.73],[0.9,107.93],[1.24,101.24],[2.13,94.67],[3.57,88.24],[5.57,81.96],[8.13,75.84],[11.25,69.9],[14.93,64.15],[19.16,58.6],[23.95,53.26],[29.29,48.14],[35.18,43.25],[41.62,38.6],[48.6,34.2],[56.12,30.06],[64.17,26.19],[72.75,22.6],[81.85,19.3],[91.47,16.3],[101.6,13.61],[112.24,11.24],[123.38,9.2],[135.02,7.5],[147.15,6.15],[159.77,5.16],[172.87,4.53],[186.45,4.27],[200.5,4.38],[215.02,4.87],[230,5.75],[245.44,7.02],[261.34,8.69],[277.7,10.77],[294.52,13.27],[294.52,13.27],[277.7,10.77],[261.34,8.69],[245.44,7.02],[230,5.75],[215.02,4.87],[200.5,4.38],[186.45,4.27],[172.87,4.53],[159.77,5.16],[147.15,6.15],[135.02,7.5],[123.38,9.2],[112.24,11.24],[101.6,13.61],[91.47,16.3],[81.85,19.3],[72.75,22.6],[64.17,26.19],[56.12,30.06],[48.6,34.2],[41.62,38.6],[35.18,43.25],[29.29,48.14],[23.95,53.26],[19.16,58.6],[14.93,64.15],[11.25,69.9],[8.13,75.84],[5.57,81.96],[3.57,88.24],[2.13,94.67],[1.24,101.24],[0.9,107.93],[1.1,114.73],[1.83,121.62],[3.07,128.59],[4.81,135.62],[7.03,142.69],[9.71,149.78],[12.82,156.87],[16.34,163.93],[20.25,170.95],[24.52,177.91],[29.12,184.78],[34.02,191.55],[39.2,198.19],[44.61,204.7],[50.22,211.05],[55.98,217.23],[61.87,223.22],[67.86,228.98],[73.89,234.52],[79.94,239.8],[85.96,244.82],[91.91,249.57],[97.75,254.04],[103.44,258.24],[108.95,262.16],[114.23,265.8],[119.26,269.16],[124,272.25],[128.44,275.07],[132.54,277.62],[136.27,279.89],[139.61,281.89],[142.53,283.61],[145.01,285.06],[147.03,286.23],[148.55,287.11],[149.55,287.7],[150,288]];
-
-    // State
-    var sprites=[],loadedN=0,appStarted=false;
-    var txtCvs,txtCtx,cvs,ctx,ovl,wrap,hintRow,brushCur,cc,ccx;
-    var dA=0,showD=false,ptls=[],isDown=false,rev=false,orb=false,an=false,lx=0,ly=0,mDone=false;
-
-    // Load sprites from base64
-    RAW.forEach(function(d){
-      var im=new Image();
-      im.onload=function(){preRender(im);loadedN++;if(loadedN>=RAW.length)initApp();};
-      im.onerror=function(){loadedN++;if(loadedN>=RAW.length)initApp();};
-      im.src=d.src;
-    });
-    setTimeout(function(){if(!appStarted)initApp();},3000);
-
-    function preRender(im){
-      // Create multiple size variants with flipped versions
-      var sizes=[1.0,0.8,0.65,0.5];
-      sizes.forEach(function(s){
-        var c=document.createElement('canvas');
-        c.width=Math.round(im.width*s);
-        c.height=Math.round(im.height*s);
-        var cx=c.getContext('2d');
-        cx.drawImage(im,0,0,c.width,c.height);
-        sprites.push(c);
-        // Horizontal flip
-        var c2=document.createElement('canvas');
-        c2.width=c.width;c2.height=c.height;
-        var cx2=c2.getContext('2d');
-        cx2.translate(c2.width,0);cx2.scale(-1,1);
-        cx2.drawImage(c,0,0);
-        sprites.push(c2);
-      });
-    }
-
-    function initApp(){
-      if(appStarted)return;appStarted=true;
-      txtCvs=document.getElementById("textCanvas");
-      txtCtx=txtCvs.getContext("2d");
-      cvs=document.getElementById("petalCanvas");
-      ctx=cvs.getContext("2d");
-      ovl=document.getElementById("evtOverlay");
-      wrap=document.getElementById("heartWrap");
-      hintRow=document.getElementById("hintRow");
-      brushCur=document.getElementById("pp-cur");
-      cc=document.getElementById("pp-cc");
-      ccx=cc.getContext("2d");
-
-      gen();resize();
-      if(document.readyState==="loading"){
-        document.addEventListener("DOMContentLoaded",function(){resize();});
+      // Heart path
+      function heartPath(ctx, s) {
+        ctx.beginPath();
+        const w = s, h = s;
+        const cx = w / 2, cy = h * 0.45;
+        const scale = w * 0.42;
+        ctx.moveTo(cx, cy + scale * 0.7);
+        for (let t = 0; t <= Math.PI * 2; t += 0.01) {
+          const x = 16 * Math.pow(Math.sin(t), 3);
+          const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+          ctx.lineTo(cx + x * scale / 17, cy + y * scale / 17);
+        }
+        ctx.closePath();
       }
-      window.addEventListener("resize",resize);
 
-      // Events
-      ovl.addEventListener("mousedown",function(e){isDown=true;var c=toC(e.clientX,e.clientY);lx=c.x;ly=c.y;brush(c.x,c.y,c.x,c.y);});
-      ovl.addEventListener("mousemove",function(e){if(!isDown)return;var c=toC(e.clientX,e.clientY);brush(c.x,c.y,lx,ly);lx=c.x;ly=c.y;});
-      ovl.addEventListener("mouseup",function(){isDown=false;});
-      ovl.addEventListener("touchstart",function(e){e.preventDefault();isDown=true;var t=e.touches[0],c=toC(t.clientX,t.clientY);lx=c.x;ly=c.y;brush(c.x,c.y,c.x,c.y);},{passive:false});
-      ovl.addEventListener("touchmove",function(e){e.preventDefault();if(!isDown)return;var t=e.touches[0],c=toC(t.clientX,t.clientY);brush(c.x,c.y,lx,ly);lx=c.x;ly=c.y;},{passive:false});
-      ovl.addEventListener("touchend",function(){isDown=false;});
+      // Draw heart-shaped petal pattern on bg canvas
+      bgCtx.save();
+      heartPath(bgCtx, SIZE);
+      bgCtx.clip();
 
-      document.addEventListener("mousemove",function(e){if(brushCur){brushCur.style.left=e.clientX+"px";brushCur.style.top=e.clientY+"px";brushCur.style.display="block";}});
-      ovl.addEventListener("mouseleave",function(){if(brushCur)brushCur.style.display="none";});
+      // Dark burgundy base
+      bgCtx.fillStyle = '#5B1A2E';
+      bgCtx.fillRect(0, 0, SIZE, SIZE);
+
+      // Draw rose petal shapes
+      const petalColors = [
+        '#e8456b', '#c03050', '#d45070', '#a02040',
+        '#f06080', '#b83858', '#cc4060', '#8b2038',
+        '#e05575', '#d04565', '#c83855', '#961830'
+      ];
+
+      for (let i = 0; i < 200; i++) {
+        const px = Math.random() * SIZE;
+        const py = Math.random() * SIZE;
+        const pw = Math.random() * 25 + 12;
+        const ph = Math.random() * 30 + 15;
+        const angle = Math.random() * Math.PI * 2;
+        const color = petalColors[Math.floor(Math.random() * petalColors.length)];
+
+        bgCtx.save();
+        bgCtx.translate(px, py);
+        bgCtx.rotate(angle);
+        bgCtx.beginPath();
+        bgCtx.ellipse(0, 0, pw/2, ph/2, 0, 0, Math.PI * 2);
+        const grad = bgCtx.createRadialGradient(-pw*0.15, -ph*0.15, 0, 0, 0, Math.max(pw, ph)/2);
+        grad.addColorStop(0, color);
+        grad.addColorStop(1, shadeColor(color, -30));
+        bgCtx.fillStyle = grad;
+        bgCtx.globalAlpha = 0.85;
+        bgCtx.fill();
+        // Vein line
+        bgCtx.beginPath();
+        bgCtx.moveTo(0, -ph/2);
+        bgCtx.quadraticCurveTo(pw*0.1, 0, 0, ph/2);
+        bgCtx.strokeStyle = 'rgba(0,0,0,0.15)';
+        bgCtx.lineWidth = 0.8;
+        bgCtx.stroke();
+        bgCtx.restore();
+      }
+
+      // Lighter petal overlay for depth
+      for (let i = 0; i < 60; i++) {
+        const px = Math.random() * SIZE;
+        const py = Math.random() * SIZE;
+        const pw = Math.random() * 18 + 8;
+        const ph = Math.random() * 22 + 10;
+        const angle = Math.random() * Math.PI * 2;
+        bgCtx.save();
+        bgCtx.translate(px, py);
+        bgCtx.rotate(angle);
+        bgCtx.beginPath();
+        bgCtx.ellipse(0, 0, pw/2, ph/2, 0, 0, Math.PI * 2);
+        bgCtx.fillStyle = `rgba(255,200,210,${Math.random()*0.15+0.05})`;
+        bgCtx.fill();
+        bgCtx.restore();
+      }
+
+      bgCtx.restore();
+
+      // Draw cover canvas (the layer user scrubs away)
+      coverCtx.save();
+      heartPath(coverCtx, SIZE);
+      coverCtx.clip();
+
+      // Rich red petal cover
+      coverCtx.fillStyle = '#a02845';
+      coverCtx.fillRect(0, 0, SIZE, SIZE);
+
+      // More detailed petals on cover
+      for (let i = 0; i < 180; i++) {
+        const px = Math.random() * SIZE;
+        const py = Math.random() * SIZE;
+        const pw = Math.random() * 28 + 14;
+        const ph = Math.random() * 32 + 16;
+        const angle = Math.random() * Math.PI * 2;
+        const color = petalColors[Math.floor(Math.random() * petalColors.length)];
+        coverCtx.save();
+        coverCtx.translate(px, py);
+        coverCtx.rotate(angle);
+        coverCtx.beginPath();
+        coverCtx.ellipse(0, 0, pw/2, ph/2, 0, 0, Math.PI * 2);
+        const grad = coverCtx.createRadialGradient(-pw*0.2, -ph*0.2, 0, 0, 0, Math.max(pw, ph)/2);
+        grad.addColorStop(0, lightenColor(color, 20));
+        grad.addColorStop(0.6, color);
+        grad.addColorStop(1, shadeColor(color, -40));
+        coverCtx.fillStyle = grad;
+        coverCtx.globalAlpha = 0.9;
+        coverCtx.fill();
+        // Petal edge highlight
+        coverCtx.beginPath();
+        coverCtx.ellipse(0, 0, pw/2, ph/2, 0, 0, Math.PI * 2);
+        coverCtx.strokeStyle = `rgba(255,255,255,${Math.random()*0.1})`;
+        coverCtx.lineWidth = 0.5;
+        coverCtx.stroke();
+        coverCtx.restore();
+      }
+
+      // 3D shadow/depth
+      const sg = coverCtx.createRadialGradient(SIZE/2, SIZE*0.45, SIZE*0.1, SIZE/2, SIZE*0.45, SIZE*0.45);
+      sg.addColorStop(0, 'rgba(255,255,255,0.06)');
+      sg.addColorStop(0.5, 'transparent');
+      sg.addColorStop(1, 'rgba(0,0,0,0.15)');
+      coverCtx.fillStyle = sg;
+      coverCtx.fillRect(0, 0, SIZE, SIZE);
+
+      coverCtx.restore();
+
+      // Color helpers
+      function shadeColor(color, percent) {
+        const num = parseInt(color.replace('#',''), 16);
+        const r = Math.max(0, Math.min(255, (num >> 16) + percent));
+        const g = Math.max(0, Math.min(255, ((num >> 8) & 0xff) + percent));
+        const b = Math.max(0, Math.min(255, (num & 0xff) + percent));
+        return '#' + (0x1000000 + r * 0x10000 + g * 0x100 + b).toString(16).slice(1);
+      }
+      function lightenColor(color, percent) { return shadeColor(color, percent); }
+
+      // Brush mechanics
+      let isDrawing = false;
+      let totalPixels = 0;
+      let clearedPixels = 0;
+      let revealed = false;
+      let revealThreshold = 0.4; // 40% reveals the date
+
+      // Count heart pixels
+      const testCanvas = document.createElement('canvas');
+      testCanvas.width = testCanvas.height = SIZE;
+      const testCtx = testCanvas.getContext('2d');
+      heartPath(testCtx, SIZE);
+      testCtx.fill();
+      const heartData = testCtx.getImageData(0, 0, SIZE, SIZE).data;
+      for (let i = 3; i < heartData.length; i += 4) {
+        if (heartData[i] > 0) totalPixels++;
+      }
+
+      function getPos(e) {
+        const rect = coverCanvas.getBoundingClientRect();
+        const scaleX = SIZE / rect.width;
+        const scaleY = SIZE / rect.height;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: (clientX - rect.left) * scaleX,
+          y: (clientY - rect.top) * scaleY
+        };
+      }
+
+      function scrub(x, y) {
+        const radius = SIZE * 0.06; // brush size
+        coverCtx.save();
+        coverCtx.globalCompositeOperation = 'destination-out';
+        coverCtx.beginPath();
+        coverCtx.arc(x, y, radius, 0, Math.PI * 2);
+        coverCtx.fill();
+        coverCtx.restore();
+
+        // Check progress
+        const data = coverCtx.getImageData(0, 0, SIZE, SIZE).data;
+        let remaining = 0;
+        for (let i = 3; i < data.length; i += 4) {
+          if (data[i] > 0) remaining++;
+        }
+        clearedPixels = totalPixels - remaining;
+        const pct = clearedPixels / totalPixels;
+
+        scrubProgress.textContent = Math.round(pct * 100) + '% revealed';
+
+        if (pct > 0.1) {
+          heartReveal.classList.add('show');
+        }
+
+        if (pct >= revealThreshold && !revealed) {
+          revealed = true;
+          brushHint.classList.add('hidden');
+          scrubProgress.classList.add('hidden');
+          continueBtn.classList.add('show');
+          // Clear remaining cover with animation
+          fadeOutCover();
+        }
+      }
+
+      function fadeOutCover() {
+        let opacity = 1;
+        function step() {
+          opacity -= 0.03;
+          if (opacity <= 0) {
+            coverCanvas.style.display = 'none';
+            return;
+          }
+          coverCanvas.style.opacity = opacity;
+          requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+
+      coverCanvas.addEventListener('mousedown', (e) => { isDrawing = true; const p = getPos(e); scrub(p.x, p.y); });
+      coverCanvas.addEventListener('mousemove', (e) => { if (isDrawing) { const p = getPos(e); scrub(p.x, p.y); } });
+      coverCanvas.addEventListener('mouseup', () => isDrawing = false);
+      coverCanvas.addEventListener('mouseleave', () => isDrawing = false);
+
+      coverCanvas.addEventListener('touchstart', (e) => { e.preventDefault(); isDrawing = true; const p = getPos(e); scrub(p.x, p.y); }, { passive: false });
+      coverCanvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (isDrawing) { const p = getPos(e); scrub(p.x, p.y); } }, { passive: false });
+      coverCanvas.addEventListener('touchend', () => isDrawing = false);
 
       // Continue button
-      document.getElementById("stdContinue").addEventListener("click",function(){
-        document.getElementById("saveTheDate").classList.add("hidden");
-        document.getElementById("mainNav").classList.add("visible");
-        AOS.init({duration:800,easing:"ease-out-cubic",once:true,offset:80});
-        setTimeout(function(){document.getElementById("saveTheDate").style.display="none";},800);
+      continueBtn.addEventListener('click', () => {
+        overlay.classList.add('hidden');
+        document.getElementById('mainNav').classList.add('visible');
+        AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 80 });
+        setTimeout(() => overlay.style.display = 'none', 800);
       });
-    }
-
-    function inH(x,y){
-      var nx=(x-150)/133,ny=(y-148)/116;
-      return Math.pow(nx*nx+ny*ny-1,3)-nx*nx*Math.pow(Math.abs(ny),3)<0.08;
-    }
-
-    function mkP(sx,sy){
-      if(!sprites.length)return null;
-      var idx=Math.floor(Math.random()*sprites.length),sp=sprites[idx];
-      var w=25+Math.random()*13,h=w*sp.height/sp.width;
-      return{x:sx+OFFSET,y:sy+OFFSET,vx:(Math.random()-.5)*.10,vy:(Math.random()-.5)*.10,rot:Math.random()*Math.PI*2,rotV:(Math.random()-.5)*.018,w:w,h:h,idx:idx,op:Math.random()*.10+.86,bvx:0,bvy:0,fr:.83,phase:"pile",oT:Math.random(),oTgt:0,oP:Math.random()*Math.PI*2,age:0,alive:true};
-    }
-
-    function gen(){
-      ptls=[];var tries=0;
-      while(ptls.length<340&&tries<10000){
-        tries++;
-        var x=12+Math.random()*276,y=16+Math.random()*256;
-        if(inH(x,y)){var p=mkP(x,y);if(p)ptls.push(p);}
-      }
-    }
-
-    function dP(p){
-      if(!p.alive||!sprites.length)return;
-      var sp=sprites[p.idx];
-      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=p.op;
-      ctx.shadowColor="rgba(60,0,0,0.35)";ctx.shadowBlur=3;ctx.shadowOffsetX=1;ctx.shadowOffsetY=2;
-      ctx.drawImage(sp,-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
-    }
-
-    function paintPile(){
-      ctx.clearRect(0,0,CW,CH);
-      ctx.save();ctx.translate(OFFSET,OFFSET);ctx.clip(new Path2D(HP));ctx.translate(-OFFSET,-OFFSET);
-      ptls.forEach(dP);ctx.restore();
-    }
-
-    function brush(a,b,c,d){
-      var dx=a-c,dy=b-d,sp2=Math.sqrt(dx*dx+dy*dy),nx=sp2>.5?dx/sp2:0,ny=sp2>.5?dy/sp2:0;
-      ptls.forEach(function(p){
-        if(p.phase!=="pile")return;
-        var bx=p.x-a,by=p.y-b,dist=Math.sqrt(bx*bx+by*by);
-        if(dist<BR&&dist>.5){
-          var f=(1-dist/BR)*PF*(1+sp2*.05),ang=Math.atan2(by,bx);
-          p.bvx+=Math.cos(ang)*f*.85+nx*f*.55;
-          p.bvy+=Math.sin(ang)*f*.85+ny*f*.35;
-          p.rotV+=(Math.random()-.5)*.13;
-        }
-      });
-      startAnim();if(!rev)checkRev();
-    }
-
-    function checkRev(){
-      var cnt=0;
-      ptls.forEach(function(p){
-        var dx=(p.x-OFFSET)-150,dy=(p.y-OFFSET)-148;
-        if(Math.sqrt(dx*dx+dy*dy)<72)cnt++;
-      });
-      if(cnt<ptls.length*.15)doRev();
-    }
-
-    function doRev(){
-      if(rev)return;rev=true;
-      hintRow.classList.add("hidden");
-      animD();
-      setTimeout(startOrbit,400);
-      setTimeout(function(){
-        document.getElementById("stdContinue").classList.add("show");
-      },1200);
-    }
-
-    function startOrbit(){
-      orb=true;
-      ptls.forEach(function(p,i){
-        p.phase="orbit";p.oTgt=i/ptls.length;p.age=0;p.op=Math.min(p.op,.82);
-      });
-      confetti();
-    }
-
-    function startAnim(){if(an)return;an=true;loop();}
-
-    function loop(){
-      ctx.clearRect(0,0,CW,CH);
-      if(!orb){ctx.save();ctx.translate(OFFSET,OFFSET);ctx.clip(new Path2D(HP));ctx.translate(-OFFSET,-OFFSET);}
-      ptls.forEach(function(p){
-        if(!p.alive)return;
-        if(p.phase==="pile"){
-          p.x+=p.vx+p.bvx;p.y+=p.vy+p.bvy;p.bvx*=p.fr;p.bvy*=p.fr;p.rotV*=.97;p.rot+=p.rotV;
-          p.x=Math.max(OFFSET+8,Math.min(OFFSET+292,p.x));p.y=Math.max(OFFSET+14,Math.min(OFFSET+274,p.y));
-        }else if(p.phase==="orbit"){
-          p.age++;var diff=p.oTgt-p.oT;if(diff>.5)diff-=1;if(diff<-.5)diff+=1;
-          var spd=p.age<20?.18:.065;p.oT+=diff*spd;p.oT=(p.oT%1+1)%1;
-          var i2=Math.floor(p.oT*ORBIT.length)%ORBIT.length,pt=ORBIT[i2];
-          p.x+=(pt[0]+OFFSET+Math.cos(p.age*.026+p.oP)*2-p.x)*.08;
-          p.y+=(pt[1]+OFFSET+Math.sin(p.age*.026+p.oP)*2-p.y)*.08;
-          p.rot+=.008;p.op*=.997;if(p.op<.02)p.alive=false;
-        }
-        dP(p);
-      });
-      if(!orb)ctx.restore();
-      if(orb){
-        var any=ptls.some(function(p){return p.alive;});
-        if(!any){an=false;return;}
-      }
-      requestAnimationFrame(loop);
-    }
-
-    // Text reveal on textCanvas
-    function sTC(){
-      var r=wrap.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
-      txtCvs.width=Math.round(300*dpr);txtCvs.height=Math.round(288*dpr);
-      txtCvs.style.width=r.width+"px";txtCvs.style.height=r.height+"px";
-      txtCtx.setTransform(1,0,0,1,0,0);txtCtx.scale(dpr,dpr);
-    }
-
-    function dTxt(){
-      var dpr=window.devicePixelRatio||1;
-      txtCtx.clearRect(0,0,300*dpr,288*dpr);
-      txtCtx.save();txtCtx.clip(new Path2D(HP));
-      txtCtx.textAlign="center";txtCtx.textBaseline="middle";
-      txtCtx.font="400 9.5px Montserrat,sans-serif";txtCtx.letterSpacing="3px";
-      txtCtx.fillStyle="rgba(184,112,96,"+(showD?dA:0.12).toFixed(2)+")";
-      txtCtx.fillText("SAVE THE DATE",150,90);
-      txtCtx.font="300 14px Cormorant Garamond,serif";txtCtx.letterSpacing="0px";
-      txtCtx.fillStyle="rgba(138,104,88,"+(showD?dA:0.12).toFixed(2)+")";
-      txtCtx.fillText("Bethsaida Garden",150,120);
-      txtCtx.fillText("Nairobi, Kenya",150,138);
-      txtCtx.strokeStyle="rgba(184,112,96,"+(showD?dA*.3:0.04).toFixed(2)+")";
-      txtCtx.lineWidth=0.8;txtCtx.beginPath();txtCtx.moveTo(122,152);txtCtx.lineTo(178,152);txtCtx.stroke();
-      txtCtx.font="italic 500 25px Cormorant Garamond,serif";txtCtx.letterSpacing="0.5px";
-      txtCtx.fillStyle="rgba(42,21,16,"+(showD?dA:0.12).toFixed(2)+")";
-      txtCtx.fillText("8 August 2026",150,180);
-      txtCtx.restore();
-    }
-
-    function animD(){
-      showD=true;
-      (function s(){dA=Math.min(dA+0.04,1);dTxt();if(dA<1)requestAnimationFrame(s);})();
-    }
-
-    var lastW=0;
-    function resize(){
-      var r=wrap.getBoundingClientRect();
-      if(Math.abs(r.width-lastW)>1){
-        lastW=r.width;cvs.width=CW;cvs.height=CH;
-        var sc=r.width/SW,off=OFFSET*sc;
-        cvs.style.width=(r.width+off*2)+"px";cvs.style.height=(r.height+off*2)+"px";
-        cvs.style.left=(-off)+"px";cvs.style.top=(-off)+"px";
-        sTC();if(!an)paintPile();
-      }
-      dTxt();
-    }
-
-    function toC(cx,cy){
-      var r=ovl.getBoundingClientRect(),sc=SW/r.width;
-      return{x:(cx-r.left)*sc,y:(cy-r.top)*sc};
-    }
-
-    // Confetti
-    function confetti(){
-      cc.width=window.innerWidth;cc.height=window.innerHeight;
-      if(!sprites.length)return;
-      var ps=[];
-      for(var i=0;i<60;i++){
-        var idx=Math.floor(Math.random()*sprites.length),sp=sprites[idx],w2=25+Math.random()*11;
-        ps.push({x:Math.random()*cc.width,y:-20-Math.random()*200,vy:Math.random()*1.6+0.5,vx:(Math.random()-.5)*1.6,w:w2,h:w2*sp.height/sp.width,rot:Math.random()*Math.PI*2,rv:(Math.random()-.5)*.08,idx:idx,al:Math.random()*.4+.55,dr:Math.random()*Math.PI*2,ds:Math.random()*.022+.008});
-      }
-      var f=0,max=340;
-      (function draw(){
-        ccx.clearRect(0,0,cc.width,cc.height);
-        var fade=Math.max(0,1-f/max);
-        ps.forEach(function(p){
-          var sp=sprites[p.idx];
-          ccx.save();ccx.globalAlpha=p.al*fade;ccx.translate(p.x,p.y);
-          ccx.rotate(p.rot);ccx.drawImage(sp,-p.w/2,-p.h/2,p.w,p.h);ccx.restore();
-          p.x+=p.vx+Math.sin(p.dr)*.6;p.y+=p.vy;p.rot+=p.rv;p.dr+=p.ds;
-        });
-        f++;
-        if(f<max)requestAnimationFrame(draw);else ccx.clearRect(0,0,cc.width,cc.height);
-      })();
-    }
-
     })();
 
     // ===========================
@@ -1173,7 +1268,6 @@
     function updateCountdown() {
       const now = new Date().getTime();
       const diff = weddingDate - now;
-
       if (diff <= 0) {
         document.getElementById('days').textContent = '0';
         document.getElementById('hours').textContent = '0';
@@ -1181,31 +1275,34 @@
         document.getElementById('seconds').textContent = '0';
         return;
       }
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-      document.getElementById('days').textContent = days;
-      document.getElementById('hours').textContent = hours;
-      document.getElementById('minutes').textContent = minutes;
-      document.getElementById('seconds').textContent = seconds;
+      document.getElementById('days').textContent = Math.floor(diff / (1000*60*60*24));
+      document.getElementById('hours').textContent = String(Math.floor((diff % (1000*60*60*24)) / (1000*60*60))).padStart(2,'0');
+      document.getElementById('minutes').textContent = String(Math.floor((diff % (1000*60*60)) / (1000*60))).padStart(2,'0');
+      document.getElementById('seconds').textContent = String(Math.floor((diff % (1000*60)) / 1000)).padStart(2,'0');
     }
-
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
     // ===========================
-    // RSVP FORM
+    // RSVP
     // ===========================
-    document.getElementById('rsvpForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const data = Object.fromEntries(formData);
-      console.log('RSVP submitted:', data);
-      alert('Thank you for your RSVP! We look forward to celebrating with you.');
-      this.reset();
+    function submitRSVP() {
+      const form = document.getElementById('rsvpForm');
+      const name = form.querySelector('[name="name"]').value;
+      const email = form.querySelector('[name="email"]').value;
+      if (!name || !email) { alert('Please fill in your name and email.'); return; }
+      form.style.display = 'none';
+      document.getElementById('rsvpSuccess').classList.add('show');
+      console.log('RSVP:', { name, email, attendance: form.querySelector('[name="attendance"]:checked').value });
+    }
+
+    // Smooth scroll for nav
+    document.querySelectorAll('nav a').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
     });
   </script>
 </body>
