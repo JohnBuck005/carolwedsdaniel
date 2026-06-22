@@ -210,6 +210,13 @@
     .music-toggle.show {
       opacity: 1;
       transform: scale(1);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .music-toggle:not(.show) {
+      opacity: 0;
+      transform: scale(0.5);
+      pointer-events: none;
+      transition: opacity 1s ease, transform 0.4s ease;
     }
     .music-toggle:hover {
       background: var(--burgundy);
@@ -929,7 +936,7 @@
   <!-- FOOTER -->
   <footer>
     <div class="footer-names" data-aos="fade-up">Daniel &amp; Caroline</div>
-    <div class="footer-date">August 8, 2026 · Bethsaida Garden, Nairobi</div>
+    <div class="footer-date">You are welcome.</div>
     <div class="footer-hearts">♥ ♥ ♥</div>
   </footer>
 
@@ -973,17 +980,15 @@
             if (e.data === YT.PlayerState.PLAYING) {
               btn.classList.remove('muted');
               btn.querySelector('.notes').textContent = '🎵';
+              btn.classList.add('show');
               // Fade out button after 5 seconds
               setTimeout(function() {
-                btn.style.transition = 'opacity 1s ease';
-                btn.style.opacity = '0';
-                setTimeout(function() { btn.style.pointerEvents = 'none'; }, 1000);
+                btn.classList.remove('show');
               }, 5000);
             } else if (e.data === YT.PlayerState.PAUSED) {
               btn.classList.add('muted');
+              btn.classList.add('show');
               btn.querySelector('.notes').textContent = '🔇';
-              btn.style.opacity = '1';
-              btn.style.pointerEvents = 'auto';
             }
           }
         }
