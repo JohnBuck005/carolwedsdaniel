@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Daniel & Caroline — August 8, 2026</title>
   <meta name="description" content="Join us as we celebrate the wedding of Daniel and Caroline on August 8, 2026 at Bethsaida Garden, Nairobi.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,6 +21,12 @@
       --white: #FFFFFF;
       --text-dark: #2C1018;
       --text-light: #FDF8F0;
+      --rose: #D4A0A0;
+      --rose-light: #E8C4C4;
+      --rose-dark: #B8807A;
+      --envelope: #D4A0A0;
+      --envelope-dark: #B8807A;
+      --envelope-flap: #C89090;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -38,132 +44,168 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== WAX SEAL INTRO ===== */
-    .seal-overlay {
+    /* ===== ENVELOPE INTRO ===== */
+    .envelope-intro {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: linear-gradient(135deg, #1a0a10 0%, #2C1018 40%, #3D0F1E 100%);
+      background: linear-gradient(180deg, #F0D5D0 0%, #E8C4C4 30%, #D4A0A0 100%);
       z-index: 9999;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: opacity 1s ease;
-      cursor: pointer;
       overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .seal-overlay::before {
+    .envelope-intro.hidden {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      pointer-events: none;
+    }
+
+    /* Decorative background pattern */
+    .envelope-intro::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(ellipse at center, rgba(201,168,76,0.08) 0%, transparent 70%);
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1) 0%, transparent 50%);
       pointer-events: none;
     }
 
-    .seal-overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .seal-envelope {
-      position: relative;
-      width: min(320px, 80vw);
-      height: min(420px, 85vh);
+    /* Top feature bar */
+    .feature-bar {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(10px);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.6rem;
+      letter-spacing: 1px;
+      color: var(--burgundy);
+      white-space: nowrap;
     }
 
-    /* Envelope flap (top triangle) */
+    .feature-bar .dot {
+      width: 3px;
+      height: 3px;
+      background: var(--burgundy-light);
+      border-radius: 50%;
+      opacity: 0.5;
+    }
+
+    /* Envelope container */
+    .envelope-container {
+      position: relative;
+      width: min(300px, 75vw);
+      height: min(220px, 55vw);
+      perspective: 800px;
+      margin-bottom: 2rem;
+    }
+
+    /* Envelope body (back) */
+    .envelope-back {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, var(--envelope) 0%, var(--envelope-dark) 100%);
+      border-radius: 4px 4px 8px 8px;
+      box-shadow: 
+        0 10px 40px rgba(91, 26, 46, 0.2),
+        0 2px 10px rgba(0,0,0,0.1),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+
+    /* Envelope inner (slightly lighter) */
+    .envelope-inner {
+      position: absolute;
+      bottom: 0;
+      left: 5%;
+      width: 90%;
+      height: 90%;
+      background: linear-gradient(180deg, #E0B8B8 0%, #D4A0A0 100%);
+      border-radius: 2px 2px 6px 6px;
+      z-index: 1;
+    }
+
+    /* V-shaped fold lines on envelope */
+    .envelope-fold {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .envelope-fold::before,
+    .envelope-fold::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .envelope-fold::before {
+      left: 0;
+      border-left: 150px solid transparent;
+      border-bottom: 180px solid rgba(0,0,0,0.03);
+    }
+
+    .envelope-fold::after {
+      right: 0;
+      border-right: 150px solid transparent;
+      border-bottom: 180px solid rgba(0,0,0,0.03);
+    }
+
+    /* Envelope flap */
     .envelope-flap {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 50%;
-      background: linear-gradient(180deg, #F5ECD3 0%, #EDE0C0 100%);
-      clip-path: polygon(0 0, 50% 70%, 100% 0);
-      z-index: 2;
+      height: 55%;
+      z-index: 5;
       transform-origin: top center;
+      transform-style: preserve-3d;
       transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
-    .envelope-flap::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: rgba(0,0,0,0.05);
+    .envelope-flap.open {
+      transform: rotateX(-180deg);
     }
 
-    /* Envelope body */
-    .envelope-body {
+    .flap-front {
       position: absolute;
-      bottom: 0;
-      left: 0;
       width: 100%;
-      height: 65%;
-      background: linear-gradient(0deg, #EDE0C0 0%, #F5ECD3 100%);
-      border-radius: 0 0 8px 8px;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      height: 100%;
+      background: linear-gradient(180deg, var(--envelope-flap) 0%, var(--envelope) 100%);
+      clip-path: polygon(0 0, 50% 100%, 100% 0);
+      backface-visibility: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
-    /* Inner card visible through opened envelope */
-    .envelope-card {
+    .flap-back {
       position: absolute;
-      top: 15%;
-      left: 10%;
-      width: 80%;
-      height: 60%;
-      background: var(--white);
-      border-radius: 4px;
-      z-index: 3;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      transform: translateY(20px);
-      opacity: 0;
-      transition: all 0.6s ease 0.5s;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-    }
-
-    .envelope-card .card-names {
-      font-family: 'Great Vibes', cursive;
-      font-size: clamp(1.8rem, 5vw, 2.5rem);
-      color: var(--burgundy);
-      margin-bottom: 0.5rem;
-    }
-
-    .envelope-card .card-amp {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: 1.2rem;
-      color: var(--gold);
-      margin: -0.2rem 0;
-    }
-
-    .envelope-card .card-date {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.95rem;
-      color: var(--burgundy-light);
-      margin-top: 0.5rem;
-    }
-
-    .envelope-card .card-venue {
-      font-size: 0.65rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-top: 0.3rem;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(0deg, var(--envelope) 0%, var(--envelope-flap) 100%);
+      clip-path: polygon(0 0, 50% 100%, 100% 0);
+      transform: rotateX(180deg);
+      backface-visibility: hidden;
     }
 
     /* Wax seal */
@@ -173,10 +215,11 @@
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 10;
-      width: 120px;
-      height: 120px;
+      width: 90px;
+      height: 90px;
       cursor: pointer;
-      transition: transform 0.3s ease;
+      transition: transform 0.2s ease;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
     }
 
     .wax-seal:hover {
@@ -187,116 +230,143 @@
       transform: translate(-50%, -50%) scale(0.95);
     }
 
-    .seal-svg {
-      width: 100%;
-      height: 100%;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+    .wax-seal.broken {
+      animation: sealCrack 0.5s ease forwards;
     }
 
-    /* Seal crack animation */
-    .seal-crack {
+    @keyframes sealCrack {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      20% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+      50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.9; }
+      100% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    }
+
+    /* Tap instruction */
+    .tap-instruction {
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-    }
-
-    .crack-line {
-      stroke: rgba(60,0,0,0.6);
-      stroke-width: 2;
-      fill: none;
-      stroke-dasharray: 100;
-      stroke-dashoffset: 100;
-    }
-
-    /* Tap hint */
-    .tap-hint {
-      position: absolute;
-      bottom: -60px;
+      bottom: -50px;
       left: 50%;
       transform: translateX(-50%);
       font-family: 'Montserrat', sans-serif;
-      font-weight: 300;
-      font-size: 0.7rem;
+      font-weight: 400;
+      font-size: 0.65rem;
       letter-spacing: 3px;
       text-transform: uppercase;
-      color: var(--gold-light);
-      opacity: 0.8;
-      animation: pulse 2s ease-in-out infinite;
+      color: var(--burgundy);
+      opacity: 0.7;
       white-space: nowrap;
+      animation: fadeInOut 2.5s ease-in-out infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 1; }
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
     }
 
-    .tap-hint .tap-icon {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      margin-right: 8px;
-      vertical-align: middle;
-      animation: tapBounce 1.5s ease-in-out infinite;
-    }
-
-    @keyframes tapBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
-    }
-
-    /* Sparkle particles */
-    .sparkle {
+    /* Card inside envelope (revealed on open) */
+    .inner-card {
       position: absolute;
-      width: 4px;
-      height: 4px;
-      background: var(--gold-light);
-      border-radius: 50%;
-      pointer-events: none;
-      opacity: 0;
-    }
-
-    /* Opening state */
-    .seal-overlay.opening .envelope-flap {
-      transform: rotateX(180deg);
-    }
-
-    .seal-overlay.opening .wax-seal {
-      animation: sealBreak 0.6s ease forwards;
-    }
-
-    .seal-overlay.opening .envelope-card {
+      top: 20%;
+      left: 8%;
+      width: 84%;
+      height: 70%;
+      background: var(--white);
+      border-radius: 4px;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2rem;
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.08);
       transform: translateY(0);
-      opacity: 1;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
     }
 
-    .seal-overlay.opening .tap-hint {
-      opacity: 0;
-      transition: opacity 0.3s;
+    .inner-card.rise {
+      transform: translateY(-60px);
     }
 
-    @keyframes sealBreak {
-      0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-      30% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-      60% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
-      100% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+    .inner-card .card-label {
+      font-size: 0.5rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--burgundy-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .inner-card .card-names {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      color: var(--burgundy);
+      line-height: 1.3;
+    }
+
+    .inner-card .card-amp {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--gold);
+    }
+
+    .inner-card .card-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+      margin: 0.6rem 0;
+      opacity: 0.5;
+    }
+
+    .inner-card .card-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+      color: var(--burgundy-light);
+      letter-spacing: 0.1em;
+    }
+
+    .inner-card .card-venue {
+      font-size: 0.55rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-top: 0.3rem;
+    }
+
+    /* Bottom info */
+    .envelope-info {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .envelope-info .info-location {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--burgundy);
+      margin-bottom: 0.2rem;
+    }
+
+    .envelope-info .info-names {
+      font-family: 'Great Vibes', cursive;
+      font-size: 1.8rem;
+      color: var(--burgundy-dark);
     }
 
     /* Continue button */
-    .seal-continue {
+    .intro-continue {
       position: absolute;
-      bottom: 40px;
+      bottom: 50px;
       left: 50%;
       transform: translateX(-50%) translateY(20px);
-      padding: 0.9rem 2.8rem;
-      background: var(--gold);
-      color: var(--burgundy-dark);
+      padding: 12px 32px;
+      background: var(--burgundy);
+      color: var(--white);
       border: none;
       border-radius: 50px;
       font-family: 'Montserrat', sans-serif;
       font-weight: 500;
-      font-size: 0.7rem;
-      letter-spacing: 4px;
+      font-size: 0.65rem;
+      letter-spacing: 3px;
       text-transform: uppercase;
       cursor: pointer;
       opacity: 0;
@@ -305,19 +375,19 @@
       z-index: 20;
     }
 
-    .seal-continue.show {
+    .intro-continue.show {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
       pointer-events: auto;
     }
 
-    .seal-continue:hover {
-      background: var(--gold-light);
+    .intro-continue:hover {
+      background: var(--burgundy-dark);
       transform: translateX(-50%) translateY(-2px);
-      box-shadow: 0 8px 25px rgba(201, 168, 76, 0.3);
+      box-shadow: 0 8px 25px rgba(91, 26, 46, 0.3);
     }
 
-    /* Confetti canvas */
+    /* Confetti */
     #confettiCanvas {
       position: fixed;
       top: 0; left: 0;
@@ -780,93 +850,103 @@
       .gallery-card img { height: 180px; }
       nav { gap: 1rem; }
       nav a { font-size: 0.6rem; letter-spacing: 2px; }
-      .wax-seal { width: 100px; height: 100px; }
-      .seal-envelope { height: min(380px, 80vh); }
+      .envelope-container { width: min(260px, 70vw); height: min(190px, 50vw); }
+      .wax-seal { width: 75px; height: 75px; }
+      .feature-bar { font-size: 0.5rem; padding: 6px 12px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- WAX SEAL ENVELOPE OVERLAY -->
-  <div class="seal-overlay" id="sealOverlay">
-    <div class="seal-envelope">
-      <!-- Envelope flap (opens upward) -->
-      <div class="envelope-flap"></div>
-      
+  <!-- ENVELOPE INTRO -->
+  <div class="envelope-intro" id="envelopeIntro">
+    
+    <!-- Feature bar -->
+    <div class="feature-bar">
+      <span>Music</span>
+      <span class="dot"></span>
+      <span>Countdown</span>
+      <span class="dot"></span>
+      <span>RSVP</span>
+      <span class="dot"></span>
+      <span>Gallery</span>
+    </div>
+
+    <!-- Envelope -->
+    <div class="envelope-container" id="envelopeContainer">
       <!-- Envelope body -->
-      <div class="envelope-body"></div>
+      <div class="envelope-back"></div>
+      <div class="envelope-inner"></div>
+      <div class="envelope-fold"></div>
       
-      <!-- Inner card (revealed on open) -->
-      <div class="envelope-card">
+      <!-- Card inside -->
+      <div class="inner-card" id="innerCard">
+        <div class="card-label">Save the Date</div>
         <div class="card-names">Daniel <span class="card-amp">&</span> Caroline</div>
+        <div class="card-divider"></div>
         <div class="card-date">August 8, 2026</div>
         <div class="card-venue">Bethsaida Garden, Nairobi</div>
       </div>
-      
-      <!-- Wax seal -->
+
+      <!-- Envelope flap -->
+      <div class="envelope-flap" id="envelopeFlap">
+        <div class="flap-front"></div>
+        <div class="flap-back"></div>
+      </div>
+
+      <!-- Wax seal on flap -->
       <div class="wax-seal" id="waxSeal">
-        <svg class="seal-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-          <!-- Wax base with irregular edges -->
+        <svg viewBox="0 0 90 90" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="waxGrad" cx="40%" cy="35%" r="60%">
-              <stop offset="0%" stop-color="#D4A84C"/>
-              <stop offset="40%" stop-color="#C9A84C"/>
-              <stop offset="70%" stop-color="#B8933A"/>
-              <stop offset="100%" stop-color="#8B6914"/>
+              <stop offset="0%" stop-color="#A0604A"/>
+              <stop offset="40%" stop-color="#8B4C3A"/>
+              <stop offset="70%" stop-color="#7A3E2E"/>
+              <stop offset="100%" stop-color="#5A2A1A"/>
             </radialGradient>
-            <radialGradient id="waxShine" cx="35%" cy="30%" r="30%">
-              <stop offset="0%" stop-color="rgba(255,255,255,0.3)"/>
+            <radialGradient id="waxShine" cx="30%" cy="25%" r="35%">
+              <stop offset="0%" stop-color="rgba(255,255,255,0.25)"/>
               <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
             </radialGradient>
-            <filter id="sealShadow">
-              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
-            </filter>
           </defs>
           
-          <!-- Irregular wax shape -->
-          <path d="M60 5 C68 3 76 8 82 6 C88 4 92 10 96 14 C100 18 106 20 108 26 C110 32 114 36 114 42 C114 48 116 54 115 60 C114 66 116 72 114 78 C112 84 110 88 106 92 C102 96 100 100 96 104 C92 108 88 110 82 112 C76 114 70 116 60 115 C50 116 44 114 38 112 C32 110 28 108 24 104 C20 100 18 96 14 92 C10 88 8 84 6 78 C4 72 6 66 5 60 C4 54 6 48 6 42 C6 36 10 32 12 26 C14 20 20 18 24 14 C28 10 32 4 38 6 C44 8 52 3 60 5Z" 
-                fill="url(#waxGrad)" filter="url(#sealShadow)"/>
+          <!-- Wax blob shape -->
+          <path d="M45 4 C51 2 57 6 62 5 C67 4 70 8 74 11 C78 14 82 16 84 21 C86 26 88 29 88 34 C88 39 89 43 89 48 C89 53 88 57 87 62 C86 67 84 70 81 73 C78 76 76 79 72 82 C68 85 64 86 59 87 C54 88 49 89 45 88 C41 89 36 88 31 87 C26 86 22 85 18 82 C14 79 12 76 9 73 C6 70 4 67 3 62 C2 57 2 53 2 48 C2 43 3 39 4 34 C4 29 6 26 8 21 C10 16 14 14 18 11 C22 8 25 4 30 5 C35 6 39 2 45 4Z" 
+                fill="url(#waxGrad)"/>
           
-          <!-- Shine overlay -->
-          <path d="M60 5 C68 3 76 8 82 6 C88 4 92 10 96 14 C100 18 106 20 108 26 C110 32 114 36 114 42 C114 48 116 54 115 60 C114 66 116 72 114 78 C112 84 110 88 106 92 C102 96 100 100 96 104 C92 108 88 110 82 112 C76 114 70 116 60 115 C50 116 44 114 38 112 C32 110 28 108 24 104 C20 100 18 96 14 92 C10 88 8 84 6 78 C4 72 6 66 5 60 C4 54 6 48 6 42 C6 36 10 32 12 26 C14 20 20 18 24 14 C28 10 32 4 38 6 C44 8 52 3 60 5Z" 
+          <!-- Shine -->
+          <path d="M45 4 C51 2 57 6 62 5 C67 4 70 8 74 11 C78 14 82 16 84 21 C86 26 88 29 88 34 C88 39 89 43 89 48 C89 53 88 57 87 62 C86 67 84 70 81 73 C78 76 76 79 72 82 C68 85 64 86 59 87 C54 88 49 89 45 88 C41 89 36 88 31 87 C26 86 22 85 18 82 C14 79 12 76 9 73 C6 70 4 67 3 62 C2 57 2 53 2 48 C2 43 3 39 4 34 C4 29 6 26 8 21 C10 16 14 14 18 11 C22 8 25 4 30 5 C35 6 39 2 45 4Z" 
                 fill="url(#waxShine)"/>
           
           <!-- Inner ring -->
-          <circle cx="60" cy="60" r="38" fill="none" stroke="rgba(139,105,20,0.4)" stroke-width="1.5"/>
-          <circle cx="60" cy="60" r="34" fill="none" stroke="rgba(139,105,20,0.3)" stroke-width="0.8"/>
+          <circle cx="45" cy="45" r="28" fill="none" stroke="rgba(90,42,26,0.4)" stroke-width="1.2"/>
           
-          <!-- D + C monogram -->
-          <text x="42" y="68" font-family="'Great Vibes', cursive" font-size="32" fill="rgba(139,105,20,0.7)" font-weight="400">D</text>
-          <text x="55" y="52" font-family="'Cormorant Garamond', serif" font-size="14" fill="rgba(139,105,20,0.5)" font-style="italic">&amp;</text>
-          <text x="64" y="68" font-family="'Great Vibes', cursive" font-size="32" fill="rgba(139,105,20,0.7)" font-weight="400">C</text>
+          <!-- Heart emboss -->
+          <path d="M45 58 C45 55 48 52 45 48 C42 52 45 55 45 58Z" fill="rgba(90,42,26,0.3)" transform="scale(1.4) translate(-13,-16)"/>
+          <path d="M38 36 C38 30 45 26 45 34 C45 26 52 30 52 36 C52 42 45 48 45 48 C45 48 38 42 38 36Z" fill="rgba(90,42,26,0.35)"/>
           
-          <!-- Small heart -->
-          <path d="M56 78 C56 76 58 74 60 76 C62 74 64 76 64 78 C64 80 60 83 60 83 C60 83 56 80 56 78Z" fill="rgba(139,105,20,0.5)"/>
-          
-          <!-- Crack lines (hidden initially, shown on tap) -->
-          <g id="crackLines" opacity="0">
-            <line x1="60" y1="20" x2="45" y2="45" stroke="rgba(60,0,0,0.5)" stroke-width="1.5" stroke-dasharray="4,3"/>
-            <line x1="60" y1="20" x2="75" y2="40" stroke="rgba(60,0,0,0.4)" stroke-width="1" stroke-dasharray="3,4"/>
-            <line x1="45" y1="45" x2="30" y2="65" stroke="rgba(60,0,0,0.3)" stroke-width="1" stroke-dasharray="5,2"/>
-            <line x1="75" y1="40" x2="90" y2="60" stroke="rgba(60,0,0,0.4)" stroke-width="1.5" stroke-dasharray="4,3"/>
-            <line x1="30" y1="65" x2="35" y2="90" stroke="rgba(60,0,0,0.3)" stroke-width="1" stroke-dasharray="3,4"/>
-            <line x1="90" y1="60" x2="85" y2="85" stroke="rgba(60,0,0,0.4)" stroke-width="1" stroke-dasharray="4,3"/>
+          <!-- Crack lines (hidden, shown on tap) -->
+          <g id="sealCracks" opacity="0">
+            <line x1="45" y1="15" x2="32" y2="35" stroke="rgba(40,20,10,0.6)" stroke-width="1.5" stroke-dasharray="3,2"/>
+            <line x1="45" y1="15" x2="58" y2="32" stroke="rgba(40,20,10,0.5)" stroke-width="1" stroke-dasharray="2,3"/>
+            <line x1="32" y1="35" x2="20" y2="55" stroke="rgba(40,20,10,0.4)" stroke-width="1" stroke-dasharray="4,2"/>
+            <line x1="58" y1="32" x2="70" y2="52" stroke="rgba(40,20,10,0.5)" stroke-width="1" stroke-dasharray="3,2"/>
           </g>
         </svg>
-        
-        <!-- Tap hint -->
-        <div class="tap-hint" id="tapHint">
-          <svg class="tap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-            <path d="M12 6v6l4 2"/>
-          </svg>
-          Tap to open
-        </div>
       </div>
+
+      <!-- Tap instruction -->
+      <div class="tap-instruction" id="tapInstruction">Tap to open</div>
     </div>
-    
+
+    <!-- Bottom info -->
+    <div class="envelope-info">
+      <div class="info-location">Bethsaida Garden, Nairobi</div>
+      <div class="info-names">Daniel & Caroline</div>
+    </div>
+
     <!-- Continue button -->
-    <button class="seal-continue" id="sealContinue">Enter Our Wedding</button>
+    <button class="intro-continue" id="introContinue">Enter Our Wedding</button>
   </div>
 
   <!-- Confetti canvas -->
@@ -1047,161 +1127,125 @@
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script>
     // ===========================
-    // WAX SEAL ENVELOPE INTRO
+    // ENVELOPE SEAL INTRO
     // ===========================
     (function() {
       "use strict";
 
-      const overlay = document.getElementById('sealOverlay');
+      const intro = document.getElementById('envelopeIntro');
       const seal = document.getElementById('waxSeal');
-      const crackLines = document.getElementById('crackLines');
-      const tapHint = document.getElementById('tapHint');
-      const continueBtn = document.getElementById('sealContinue');
-      const confettiCanvas = document.getElementById('confettiCanvas');
-      const confettiCtx = confettiCanvas.getContext('2d');
+      const flap = document.getElementById('envelopeFlap');
+      const card = document.getElementById('innerCard');
+      const cracks = document.getElementById('sealCracks');
+      const hint = document.getElementById('tapInstruction');
+      const btn = document.getElementById('introContinue');
+      const cc = document.getElementById('confettiCanvas');
+      const ccx = cc.getContext('2d');
 
-      let isOpened = false;
-      let confettiParticles = [];
+      let opened = false;
 
-      // Tap/click handler
-      function handleOpen(e) {
-        if (isOpened) return;
-        isOpened = true;
-
-        // Prevent double-tap zoom on mobile
+      function openEnvelope(e) {
+        if (opened) return;
+        opened = true;
         e.preventDefault();
 
-        // Show cracks
-        crackLines.style.transition = 'opacity 0.3s';
-        crackLines.style.opacity = '1';
+        // 1. Show cracks on seal
+        cracks.style.transition = 'opacity 0.2s';
+        cracks.style.opacity = '1';
 
-        // Add opening class after brief delay
+        // 2. Break seal
+        seal.classList.add('broken');
+        hint.style.opacity = '0';
+
+        // 3. Open flap (after seal breaks)
         setTimeout(() => {
-          overlay.classList.add('opening');
-          
-          // Trigger confetti
-          setTimeout(() => {
-            launchConfetti();
-          }, 400);
+          flap.classList.add('open');
+        }, 400);
 
-          // Show continue button
-          setTimeout(() => {
-            continueBtn.classList.add('show');
-          }, 1200);
-        }, 300);
+        // 4. Rise card
+        setTimeout(() => {
+          card.classList.add('rise');
+        }, 600);
+
+        // 5. Confetti
+        setTimeout(() => {
+          fireConfetti();
+        }, 800);
+
+        // 6. Show button
+        setTimeout(() => {
+          btn.classList.add('show');
+        }, 1500);
       }
 
-      seal.addEventListener('click', handleOpen);
+      seal.addEventListener('click', openEnvelope);
       seal.addEventListener('touchend', function(e) {
         e.preventDefault();
-        handleOpen(e);
+        openEnvelope(e);
       });
 
-      // Continue button
-      continueBtn.addEventListener('click', function() {
-        overlay.classList.add('hidden');
+      // Continue
+      btn.addEventListener('click', function() {
+        intro.classList.add('hidden');
         document.getElementById('mainNav').classList.add('visible');
         AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 80 });
-        setTimeout(() => {
-          overlay.style.display = 'none';
-        }, 1000);
+        setTimeout(() => { intro.style.display = 'none'; }, 800);
       });
 
       // ===========================
       // CONFETTI
       // ===========================
-      function launchConfetti() {
-        confettiCanvas.width = window.innerWidth;
-        confettiCanvas.height = window.innerHeight;
+      function fireConfetti() {
+        cc.width = window.innerWidth;
+        cc.height = window.innerHeight;
 
-        const colors = ['#C9A84C', '#E0C872', '#5B1A2E', '#7A2B43', '#FDF8F0', '#F5ECD3'];
-        
-        for (let i = 0; i < 80; i++) {
-          confettiParticles.push({
-            x: Math.random() * confettiCanvas.width,
-            y: -10 - Math.random() * 200,
-            vx: (Math.random() - 0.5) * 4,
-            vy: Math.random() * 3 + 1,
-            w: Math.random() * 8 + 4,
-            h: Math.random() * 6 + 3,
-            rotation: Math.random() * Math.PI * 2,
-            rotSpeed: (Math.random() - 0.5) * 0.15,
+        const colors = ['#C9A84C', '#E0C872', '#5B1A2E', '#7A2B43', '#D4A0A0', '#FDF8F0'];
+        const particles = [];
+
+        for (let i = 0; i < 60; i++) {
+          particles.push({
+            x: Math.random() * cc.width,
+            y: -10 - Math.random() * 150,
+            vx: (Math.random() - 0.5) * 3,
+            vy: Math.random() * 2 + 0.8,
+            w: Math.random() * 7 + 3,
+            h: Math.random() * 5 + 2,
+            rot: Math.random() * Math.PI * 2,
+            rv: (Math.random() - 0.5) * 0.12,
             color: colors[Math.floor(Math.random() * colors.length)],
-            opacity: Math.random() * 0.4 + 0.6,
+            al: Math.random() * 0.4 + 0.5,
             wobble: Math.random() * Math.PI * 2,
-            wobbleSpeed: Math.random() * 0.05 + 0.02
+            ws: Math.random() * 0.04 + 0.01
           });
         }
 
-        let frame = 0;
-        const maxFrames = 300;
+        let f = 0;
+        const max = 250;
 
-        function drawConfetti() {
-          confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-          
-          const fade = Math.max(0, 1 - frame / maxFrames);
+        (function draw() {
+          ccx.clearRect(0, 0, cc.width, cc.height);
+          const fade = Math.max(0, 1 - f / max);
 
-          confettiParticles.forEach(p => {
-            confettiCtx.save();
-            confettiCtx.globalAlpha = p.opacity * fade;
-            confettiCtx.translate(p.x, p.y);
-            confettiCtx.rotate(p.rotation);
-            confettiCtx.fillStyle = p.color;
-            confettiCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
-            confettiCtx.restore();
+          particles.forEach(p => {
+            ccx.save();
+            ccx.globalAlpha = p.al * fade;
+            ccx.translate(p.x, p.y);
+            ccx.rotate(p.rot);
+            ccx.fillStyle = p.color;
+            ccx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ccx.restore();
 
-            p.x += p.vx + Math.sin(p.wobble) * 0.5;
+            p.x += p.vx + Math.sin(p.wobble) * 0.4;
             p.y += p.vy;
-            p.rotation += p.rotSpeed;
-            p.wobble += p.wobbleSpeed;
-            p.vy += 0.02; // gravity
+            p.rot += p.rv;
+            p.wobble += p.ws;
+            p.vy += 0.015;
           });
 
-          frame++;
-          if (frame < maxFrames) {
-            requestAnimationFrame(drawConfetti);
-          } else {
-            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-            confettiParticles = [];
-          }
-        }
-
-        requestAnimationFrame(drawConfetti);
-      }
-
-      // Sparkle effect on seal hover
-      seal.addEventListener('mousemove', function(e) {
-        if (isOpened) return;
-        const rect = seal.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        createSparkle(x, y, rect);
-      });
-
-      function createSparkle(x, y, rect) {
-        if (Math.random() > 0.3) return; // Only 30% chance
-        
-        const sparkle = document.createElement('div');
-        sparkle.className = 'sparkle';
-        sparkle.style.left = x + 'px';
-        sparkle.style.top = y + 'px';
-        sparkle.style.width = (Math.random() * 4 + 2) + 'px';
-        sparkle.style.height = sparkle.style.width;
-        sparkle.style.background = Math.random() > 0.5 ? 'var(--gold-light)' : 'var(--gold)';
-        seal.appendChild(sparkle);
-
-        // Animate
-        const angle = Math.random() * Math.PI * 2;
-        const distance = Math.random() * 20 + 10;
-        const duration = Math.random() * 400 + 300;
-
-        sparkle.animate([
-          { opacity: 1, transform: 'translate(0, 0) scale(1)' },
-          { opacity: 0, transform: `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0)` }
-        ], {
-          duration: duration,
-          easing: 'ease-out'
-        }).onfinish = () => sparkle.remove();
+          f++;
+          if (f < max) requestAnimationFrame(draw);
+          else ccx.clearRect(0, 0, cc.width, cc.height);
+        })();
       }
 
     })();
@@ -1211,19 +1255,16 @@
     // ===========================
     (function() {
       const nav = document.getElementById('mainNav');
-      let lastScroll = 0;
       const heroHeight = window.innerHeight * 0.3;
 
       window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-        if (scrollY > heroHeight) {
+        if (window.scrollY > heroHeight) {
           nav.classList.add('fading');
           nav.classList.remove('visible');
         } else {
           nav.classList.remove('fading');
           nav.classList.add('visible');
         }
-        lastScroll = scrollY;
       });
     })();
 
@@ -1243,15 +1284,10 @@
         return;
       }
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-      document.getElementById('days').textContent = days;
-      document.getElementById('hours').textContent = hours;
-      document.getElementById('minutes').textContent = minutes;
-      document.getElementById('seconds').textContent = seconds;
+      document.getElementById('days').textContent = Math.floor(diff / (1000 * 60 * 60 * 24));
+      document.getElementById('hours').textContent = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      document.getElementById('minutes').textContent = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      document.getElementById('seconds').textContent = Math.floor((diff % (1000 * 60)) / 1000);
     }
 
     updateCountdown();
