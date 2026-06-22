@@ -948,7 +948,7 @@
       ytPlayer = new YT.Player('ytPlayer', {
         height: '1',
         width: '1',
-        videoId: 'j1JfXxEQSro',
+        videoId: 'qf3M3DHXu6E',
         playerVars: {
           autoplay: 0,
           controls: 0,
@@ -957,7 +957,7 @@
           modestbranding: 1,
           rel: 0,
           loop: 1,
-          playlist: 'j1JfXxEQSro'
+          playlist: 'qf3M3DHXu6E'
         },
         events: {
           onReady: function(e) {
@@ -973,9 +973,17 @@
             if (e.data === YT.PlayerState.PLAYING) {
               btn.classList.remove('muted');
               btn.querySelector('.notes').textContent = '🎵';
+              // Fade out button after 5 seconds
+              setTimeout(function() {
+                btn.style.transition = 'opacity 1s ease';
+                btn.style.opacity = '0';
+                setTimeout(function() { btn.style.pointerEvents = 'none'; }, 1000);
+              }, 5000);
             } else if (e.data === YT.PlayerState.PAUSED) {
               btn.classList.add('muted');
               btn.querySelector('.notes').textContent = '🔇';
+              btn.style.opacity = '1';
+              btn.style.pointerEvents = 'auto';
             }
           }
         }
