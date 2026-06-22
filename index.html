@@ -18,6 +18,7 @@
       --gold-light: #E0C872;
       --gold-pale: #F5ECD3;
       --cream: #FDF8F0;
+      --champagne: #FFF8E7;
       --white: #FFFFFF;
       --text-dark: #2C1018;
       --text-light: #FDF8F0;
@@ -43,7 +44,7 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: var(--cream);
+      background: var(--champagne);
       z-index: 9999;
       display: flex;
       flex-direction: column;
@@ -59,64 +60,35 @@
     }
 
     .std-label {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.75rem;
-      letter-spacing: 0.5em;
-      color: var(--burgundy-light);
-      text-transform: uppercase;
-      margin-bottom: 1.5rem;
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      color: var(--burgundy);
+      margin-bottom: 0.5rem;
     }
 
-    .std-names {
+    .std-date-info {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.2rem, 6vw, 3.5rem);
-      font-weight: 400;
-      color: var(--text-dark);
-      text-align: center;
-      margin-bottom: 0.3rem;
-    }
-    .std-names .amp {
-      color: var(--gold);
-      font-style: italic;
-      margin: 0 0.15em;
-    }
-
-    .std-location {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: 1rem;
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      font-weight: 300;
       color: var(--burgundy-light);
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
+      letter-spacing: 2px;
     }
 
     /* Heart canvas area */
     .heart-container {
       position: relative;
-      width: min(320px, 80vw);
-      height: min(320px, 80vw);
+      width: min(360px, 80vw);
+      height: min(360px, 80vw);
       margin: 0 auto;
     }
 
-    .heart-canvas-wrap {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-    }
-
-    .heart-canvas-wrap canvas {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-    }
-
-    #heartBg {
-      z-index: 1;
-    }
-
-    #heartCover {
-      z-index: 2;
+    #petalCanvas {
+      width: 100%;
+      height: 100%;
       cursor: crosshair;
       touch-action: none;
+      border-radius: 12px;
     }
 
     /* Hidden date behind the heart */
@@ -126,27 +98,32 @@
       transform: translate(-50%, -50%);
       text-align: center;
       z-index: 0;
-      opacity: 0;
-      transition: opacity 0.6s ease;
+      pointer-events: none;
     }
-    .heart-reveal.show { opacity: 1; }
+
+    .reveal-save {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      color: var(--burgundy);
+      line-height: 1.2;
+      opacity: 0.9;
+    }
+
+    .reveal-names {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      font-weight: 400;
+      color: var(--burgundy);
+      margin-top: 0.3rem;
+    }
 
     .reveal-date {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 8vw, 3.5rem);
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
       font-weight: 300;
-      color: var(--burgundy);
-      line-height: 1.2;
-    }
-
-    .reveal-venue {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 300;
-      font-size: 0.7rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
       color: var(--gold);
-      margin-top: 0.5rem;
+      margin-top: 0.3rem;
+      letter-spacing: 2px;
     }
 
     /* Brush instruction */
@@ -204,62 +181,6 @@
       background: var(--burgundy-dark);
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(91, 26, 46, 0.3);
-    }
-
-    /* Progress indicator */
-    .scrub-progress {
-      margin-top: 1rem;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 300;
-      font-size: 0.65rem;
-      color: var(--burgundy-light);
-      opacity: 0.6;
-      transition: opacity 0.3s;
-    }
-    .scrub-progress.hidden { opacity: 0; }
-
-    /* ===== NAVIGATION (fades on scroll) ===== */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 1000;
-      background: rgba(91, 26, 46, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 0 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 2rem;
-      height: 50px;
-      opacity: 0;
-      transform: translateY(-100%);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-      pointer-events: none;
-    }
-    nav.visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-    nav.fading {
-      opacity: 0;
-      transform: translateY(-20px);
-      pointer-events: none;
-    }
-    nav a {
-      color: var(--gold-light);
-      text-decoration: none;
-      font-size: 0.7rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      font-weight: 400;
-      transition: color 0.3s;
-    }
-    nav a:hover { color: var(--white); }
-    nav .nav-divider {
-      color: var(--gold);
-      font-size: 0.5rem;
-      opacity: 0.5;
     }
 
     /* ===== HERO SECTION ===== */
@@ -625,8 +546,6 @@
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
-      nav { gap: 0.8rem; padding: 0 1rem; overflow-x: auto; justify-content: flex-start; }
-      nav a { font-size: 0.6rem; letter-spacing: 2px; white-space: nowrap; }
       .timeline-item, .timeline-item:nth-child(even) {
         flex-direction: column; text-align: center;
       }
@@ -651,18 +570,16 @@
   <!-- SAVE THE DATE OVERLAY -->
   <div class="save-the-date" id="saveTheDate">
     <p class="std-label">Save the Date</p>
-    <h1 class="std-names">Daniel <span class="amp">&</span> Caroline</h1>
-    <p class="std-location">Bethsaida Garden, Nairobi</p>
+    <p class="std-date-info">Daniel & Caroline · August 8, 2026</p>
 
     <div class="heart-container">
+      <!-- Text visible through hollow center -->
       <div class="heart-reveal" id="heartReveal">
-        <div class="reveal-date">08 · 08<br>2026</div>
-        <div class="reveal-venue">Nairobi, Kenya</div>
+        <div class="reveal-save">Save the Date</div>
+        <div class="reveal-names">Daniel & Caroline</div>
+        <div class="reveal-date">08 · 08 · 2026</div>
       </div>
-      <div class="heart-canvas-wrap">
-        <canvas id="heartBg"></canvas>
-        <canvas id="heartCover"></canvas>
-      </div>
+      <canvas id="petalCanvas"></canvas>
     </div>
 
     <div class="brush-hint" id="brushHint">
@@ -673,25 +590,8 @@
       Brush the petals to reveal
     </div>
 
-    <div class="scrub-progress" id="scrubProgress"></div>
-
     <button class="std-continue" id="stdContinue">Enter Our Wedding</button>
   </div>
-
-  <!-- NAVIGATION (hidden until intro dismissed, fades on scroll) -->
-  <nav id="mainNav">
-    <a href="#home">Home</a>
-    <span class="nav-divider">◆</span>
-    <a href="#countdown">Countdown</a>
-    <span class="nav-divider">◆</span>
-    <a href="#schedule">Schedule</a>
-    <span class="nav-divider">◆</span>
-    <a href="#location">Location</a>
-    <span class="nav-divider">◆</span>
-    <a href="#gallery">Gallery</a>
-    <span class="nav-divider">◆</span>
-    <a href="#rsvp">RSVP</a>
-  </nav>
 
   <!-- HERO -->
   <section class="hero" id="home">
@@ -702,7 +602,7 @@
     <div data-aos="fade-up" data-aos-delay="600">
       <h1 class="hero-names">
         Daniel
-        <span class="ampersand">&</span>
+        <span class="ampersand">&amp;</span>
         Caroline
       </h1>
     </div>
@@ -769,7 +669,7 @@
       <span class="diamond" style="color: var(--gold);">◆</span>
       <span class="line" style="background: var(--gold);"></span>
     </div>
-    <h2 class="section-title" data-aos="fade-up">Dear Friends & Family</h2>
+    <h2 class="section-title" data-aos="fade-up">Dear Friends &amp; Family</h2>
     <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">A message from our hearts</p>
     <div class="letter-text" data-aos="fade-up" data-aos-delay="200">
       As we get ready to say "I do," we feel grateful for the wonderful people in our lives.
@@ -807,7 +707,7 @@
         <div class="timeline-dot"></div>
         <div class="timeline-content">
           <div class="timeline-event">Cocktail Hour</div>
-          <div class="timeline-detail">Drinks & canapés</div>
+          <div class="timeline-detail">Drinks &amp; canapés</div>
         </div>
       </div>
       <div class="timeline-item" data-aos="fade-right">
@@ -815,7 +715,7 @@
         <div class="timeline-dot"></div>
         <div class="timeline-content">
           <div class="timeline-event">Luncheon</div>
-          <div class="timeline-detail">Feast & toasts</div>
+          <div class="timeline-detail">Feast &amp; toasts</div>
         </div>
       </div>
       <div class="timeline-item" data-aos="fade-left">
@@ -823,7 +723,7 @@
         <div class="timeline-dot"></div>
         <div class="timeline-content">
           <div class="timeline-event">Celebration</div>
-          <div class="timeline-detail">Music, dance & joy</div>
+          <div class="timeline-detail">Music, dance &amp; joy</div>
         </div>
       </div>
     </div>
@@ -846,7 +746,7 @@
     <h2 class="section-title" data-aos="fade-up">The Venue</h2>
     <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Where we'll say "I do"</p>
     <div class="location-map" data-aos="fade-up" data-aos-delay="200">
-      <img src="bethsaida.jpg" alt="Bethsaida Garden, Nairobi">
+      <img src="venue.jpg" alt="Bethsaida Garden, Nairobi">
     </div>
     <div data-aos="fade-up" data-aos-delay="300">
       <p class="venue-name">Bethsaida Garden</p>
@@ -897,11 +797,11 @@
     <h2 class="section-title" data-aos="fade-up">Our Moments</h2>
     <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">A glimpse into our journey</p>
     <div class="gallery-grid">
-      <div class="gallery-item" data-aos="zoom-in" data-aos-delay="100"><div class="gallery-placeholder">D & C</div></div>
+      <div class="gallery-item" data-aos="zoom-in" data-aos-delay="100"><div class="gallery-placeholder">D &amp; C</div></div>
       <div class="gallery-item" data-aos="zoom-in" data-aos-delay="200"><div class="gallery-placeholder">♥</div></div>
-      <div class="gallery-item" data-aos="zoom-in" data-aos-delay="300"><div class="gallery-placeholder">D & C</div></div>
+      <div class="gallery-item" data-aos="zoom-in" data-aos-delay="300"><div class="gallery-placeholder">D &amp; C</div></div>
       <div class="gallery-item" data-aos="zoom-in" data-aos-delay="150"><div class="gallery-placeholder">♥</div></div>
-      <div class="gallery-item" data-aos="zoom-in" data-aos-delay="250"><div class="gallery-placeholder">D & C</div></div>
+      <div class="gallery-item" data-aos="zoom-in" data-aos-delay="250"><div class="gallery-placeholder">D &amp; C</div></div>
       <div class="gallery-item" data-aos="zoom-in" data-aos-delay="350"><div class="gallery-placeholder">♥</div></div>
     </div>
   </section>
@@ -981,7 +881,7 @@
 
   <!-- FOOTER -->
   <footer>
-    <div class="footer-names" data-aos="fade-up">Daniel & Caroline</div>
+    <div class="footer-names" data-aos="fade-up">Daniel &amp; Caroline</div>
     <div class="footer-date">August 8, 2026 · Bethsaida Garden, Nairobi</div>
     <div class="footer-hearts">♥ ♥ ♥</div>
   </footer>
@@ -990,149 +890,18 @@
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script>
     // ===========================
-    // SAVE THE DATE — BRUSH TO REVEAL
+    // SAVE THE DATE — HEART PETAL PARTICLE SYSTEM
     // ===========================
     (function() {
       const overlay = document.getElementById('saveTheDate');
-      const bgCanvas = document.getElementById('heartBg');
-      const coverCanvas = document.getElementById('heartCover');
-      const bgCtx = bgCanvas.getContext('2d');
-      const coverCtx = coverCanvas.getContext('2d');
-      const heartReveal = document.getElementById('heartReveal');
+      const canvas = document.getElementById('petalCanvas');
+      const ctx = canvas.getContext('2d');
       const brushHint = document.getElementById('brushHint');
-      const scrubProgress = document.getElementById('scrubProgress');
       const continueBtn = document.getElementById('stdContinue');
 
-      const SIZE = 640; // internal canvas resolution
-      bgCanvas.width = coverCanvas.width = SIZE;
-      bgCanvas.height = coverCanvas.height = SIZE;
-
-      // Heart path
-      function heartPath(ctx, s) {
-        ctx.beginPath();
-        const w = s, h = s;
-        const cx = w / 2, cy = h * 0.45;
-        const scale = w * 0.42;
-        ctx.moveTo(cx, cy + scale * 0.7);
-        for (let t = 0; t <= Math.PI * 2; t += 0.01) {
-          const x = 16 * Math.pow(Math.sin(t), 3);
-          const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
-          ctx.lineTo(cx + x * scale / 17, cy + y * scale / 17);
-        }
-        ctx.closePath();
-      }
-
-      // Draw heart-shaped petal pattern on bg canvas
-      bgCtx.save();
-      heartPath(bgCtx, SIZE);
-      bgCtx.clip();
-
-      // Dark burgundy base
-      bgCtx.fillStyle = '#5B1A2E';
-      bgCtx.fillRect(0, 0, SIZE, SIZE);
-
-      // Draw rose petal shapes
-      const petalColors = [
-        '#e8456b', '#c03050', '#d45070', '#a02040',
-        '#f06080', '#b83858', '#cc4060', '#8b2038',
-        '#e05575', '#d04565', '#c83855', '#961830'
-      ];
-
-      for (let i = 0; i < 200; i++) {
-        const px = Math.random() * SIZE;
-        const py = Math.random() * SIZE;
-        const pw = Math.random() * 25 + 12;
-        const ph = Math.random() * 30 + 15;
-        const angle = Math.random() * Math.PI * 2;
-        const color = petalColors[Math.floor(Math.random() * petalColors.length)];
-
-        bgCtx.save();
-        bgCtx.translate(px, py);
-        bgCtx.rotate(angle);
-        bgCtx.beginPath();
-        bgCtx.ellipse(0, 0, pw/2, ph/2, 0, 0, Math.PI * 2);
-        const grad = bgCtx.createRadialGradient(-pw*0.15, -ph*0.15, 0, 0, 0, Math.max(pw, ph)/2);
-        grad.addColorStop(0, color);
-        grad.addColorStop(1, shadeColor(color, -30));
-        bgCtx.fillStyle = grad;
-        bgCtx.globalAlpha = 0.85;
-        bgCtx.fill();
-        // Vein line
-        bgCtx.beginPath();
-        bgCtx.moveTo(0, -ph/2);
-        bgCtx.quadraticCurveTo(pw*0.1, 0, 0, ph/2);
-        bgCtx.strokeStyle = 'rgba(0,0,0,0.15)';
-        bgCtx.lineWidth = 0.8;
-        bgCtx.stroke();
-        bgCtx.restore();
-      }
-
-      // Lighter petal overlay for depth
-      for (let i = 0; i < 60; i++) {
-        const px = Math.random() * SIZE;
-        const py = Math.random() * SIZE;
-        const pw = Math.random() * 18 + 8;
-        const ph = Math.random() * 22 + 10;
-        const angle = Math.random() * Math.PI * 2;
-        bgCtx.save();
-        bgCtx.translate(px, py);
-        bgCtx.rotate(angle);
-        bgCtx.beginPath();
-        bgCtx.ellipse(0, 0, pw/2, ph/2, 0, 0, Math.PI * 2);
-        bgCtx.fillStyle = `rgba(255,200,210,${Math.random()*0.15+0.05})`;
-        bgCtx.fill();
-        bgCtx.restore();
-      }
-
-      bgCtx.restore();
-
-      // Draw cover canvas (the layer user scrubs away)
-      coverCtx.save();
-      heartPath(coverCtx, SIZE);
-      coverCtx.clip();
-
-      // Rich red petal cover
-      coverCtx.fillStyle = '#a02845';
-      coverCtx.fillRect(0, 0, SIZE, SIZE);
-
-      // More detailed petals on cover
-      for (let i = 0; i < 180; i++) {
-        const px = Math.random() * SIZE;
-        const py = Math.random() * SIZE;
-        const pw = Math.random() * 28 + 14;
-        const ph = Math.random() * 32 + 16;
-        const angle = Math.random() * Math.PI * 2;
-        const color = petalColors[Math.floor(Math.random() * petalColors.length)];
-        coverCtx.save();
-        coverCtx.translate(px, py);
-        coverCtx.rotate(angle);
-        coverCtx.beginPath();
-        coverCtx.ellipse(0, 0, pw/2, ph/2, 0, 0, Math.PI * 2);
-        const grad = coverCtx.createRadialGradient(-pw*0.2, -ph*0.2, 0, 0, 0, Math.max(pw, ph)/2);
-        grad.addColorStop(0, lightenColor(color, 20));
-        grad.addColorStop(0.6, color);
-        grad.addColorStop(1, shadeColor(color, -40));
-        coverCtx.fillStyle = grad;
-        coverCtx.globalAlpha = 0.9;
-        coverCtx.fill();
-        // Petal edge highlight
-        coverCtx.beginPath();
-        coverCtx.ellipse(0, 0, pw/2, ph/2, 0, 0, Math.PI * 2);
-        coverCtx.strokeStyle = `rgba(255,255,255,${Math.random()*0.1})`;
-        coverCtx.lineWidth = 0.5;
-        coverCtx.stroke();
-        coverCtx.restore();
-      }
-
-      // 3D shadow/depth
-      const sg = coverCtx.createRadialGradient(SIZE/2, SIZE*0.45, SIZE*0.1, SIZE/2, SIZE*0.45, SIZE*0.45);
-      sg.addColorStop(0, 'rgba(255,255,255,0.06)');
-      sg.addColorStop(0.5, 'transparent');
-      sg.addColorStop(1, 'rgba(0,0,0,0.15)');
-      coverCtx.fillStyle = sg;
-      coverCtx.fillRect(0, 0, SIZE, SIZE);
-
-      coverCtx.restore();
+      const SIZE = 720;
+      canvas.width = SIZE;
+      canvas.height = SIZE;
 
       // Color helpers
       function shadeColor(color, percent) {
@@ -1142,28 +911,123 @@
         const b = Math.max(0, Math.min(255, (num & 0xff) + percent));
         return '#' + (0x1000000 + r * 0x10000 + g * 0x100 + b).toString(16).slice(1);
       }
-      function lightenColor(color, percent) { return shadeColor(color, percent); }
 
-      // Brush mechanics
-      let isDrawing = false;
-      let totalPixels = 0;
-      let clearedPixels = 0;
-      let revealed = false;
-      let revealThreshold = 0.4; // 40% reveals the date
-
-      // Count heart pixels
-      const testCanvas = document.createElement('canvas');
-      testCanvas.width = testCanvas.height = SIZE;
-      const testCtx = testCanvas.getContext('2d');
-      heartPath(testCtx, SIZE);
-      testCtx.fill();
-      const heartData = testCtx.getImageData(0, 0, SIZE, SIZE).data;
-      for (let i = 3; i < heartData.length; i += 4) {
-        if (heartData[i] > 0) totalPixels++;
+      // Parametric heart point
+      function heartPoint(t, scale, cx, cy) {
+        const x = 16 * Math.pow(Math.sin(t), 3);
+        const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+        return {
+          x: cx + x * scale / 17,
+          y: cy + y * scale / 17
+        };
       }
 
+      // Check if point is inside heart shape
+      function isInsideHeart(px, py, cx, cy, scale) {
+        // Normalize to heart coordinate space
+        const nx = (px - cx) * 17 / scale;
+        const ny = -(py - cy) * 17 / scale;
+        // Implicit heart equation: (x² + y² - 1)³ - x²y³ ≤ 0
+        const x2 = nx * nx;
+        const y2 = ny * ny;
+        const val = Math.pow(x2 + y2 - 1, 3) - x2 * ny * ny * ny;
+        return val <= 0;
+      }
+
+      // Heart center and scale
+      const cx = SIZE / 2;
+      const cy = SIZE * 0.44;
+      const heartScale = SIZE * 0.42;
+      const hollowRadius = heartScale * 0.30; // 30% hollow center
+
+      // Petal colors
+      const petalColors = [
+        '#e8456b', '#c03050', '#d45070', '#a02040',
+        '#f06080', '#b83858', '#cc4060', '#8b2038',
+        '#e05575', '#d04565', '#c83855', '#961830',
+        '#d94060', '#b22848', '#e64870', '#a82040'
+      ];
+
+      // Generate petal particles in heart shape with hollow center
+      const petals = [];
+      const TARGET_PETALS = 320;
+      let attempts = 0;
+      const maxAttempts = 50000;
+
+      while (petals.length < TARGET_PETALS && attempts < maxAttempts) {
+        attempts++;
+        // Random point within bounding box of heart
+        const px = Math.random() * SIZE;
+        const py = Math.random() * SIZE;
+
+        if (!isInsideHeart(px, py, cx, cy, heartScale)) continue;
+
+        // Check hollow center - distance from center
+        const dx = px - cx;
+        const dy = py - cy;
+        const distFromCenter = Math.sqrt(dx*dx + dy*dy);
+        if (distFromCenter < hollowRadius) continue;
+
+        const pw = Math.random() * 22 + 12;
+        const ph = Math.random() * 28 + 14;
+        const angle = Math.random() * Math.PI * 2;
+        const color = petalColors[Math.floor(Math.random() * petalColors.length)];
+
+        petals.push({
+          x: px,
+          y: py,
+          origX: px,
+          origY: py,
+          w: pw,
+          h: ph,
+          angle: angle,
+          rotSpeed: (Math.random() - 0.5) * 0.02,
+          color: color,
+          vx: 0,
+          vy: 0,
+          cleared: false,
+          opacity: 0.85 + Math.random() * 0.15,
+          depth: Math.random(), // for layered rendering
+          orbitAngle: Math.random() * Math.PI * 2,
+          orbitSpeed: 0,
+          confettiColor: null
+        });
+      }
+
+      // Sort by depth for rendering order
+      petals.sort((a, b) => a.depth - b.depth);
+
+      // Confetti particles
+      const confettiParticles = [];
+      function spawnConfetti(count) {
+        for (let i = 0; i < count; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 6 + 2;
+          confettiParticles.push({
+            x: cx,
+            y: cy,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 3,
+            color: ['#C9A84C', '#E0C872', '#e8456b', '#f06080', '#FFFFFF', '#FFF8E7'][Math.floor(Math.random() * 6)],
+            size: Math.random() * 6 + 3,
+            rotation: Math.random() * Math.PI * 2,
+            rotSpeed: (Math.random() - 0.5) * 0.3,
+            life: 1.0,
+            decay: Math.random() * 0.008 + 0.005
+          });
+        }
+      }
+
+      // State
+      let isDrawing = false;
+      let clearedCount = 0;
+      let revealed = false;
+      let orbitMode = false;
+      let animating = true;
+
+      // Brush interaction
       function getPos(e) {
-        const rect = coverCanvas.getBoundingClientRect();
+        const rect = canvas.getBoundingClientRect();
         const scaleX = SIZE / rect.width;
         const scaleY = SIZE / rect.height;
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -1174,90 +1038,185 @@
         };
       }
 
-      function scrub(x, y) {
-        const radius = SIZE * 0.06; // brush size
-        coverCtx.save();
-        coverCtx.globalCompositeOperation = 'destination-out';
-        coverCtx.beginPath();
-        coverCtx.arc(x, y, radius, 0, Math.PI * 2);
-        coverCtx.fill();
-        coverCtx.restore();
+      function brushAt(bx, by) {
+        const brushRadius = SIZE * 0.08;
+        let newlyCleared = 0;
 
-        // Check progress
-        const data = coverCtx.getImageData(0, 0, SIZE, SIZE).data;
-        let remaining = 0;
-        for (let i = 3; i < data.length; i += 4) {
-          if (data[i] > 0) remaining++;
-        }
-        clearedPixels = totalPixels - remaining;
-        const pct = clearedPixels / totalPixels;
+        for (const petal of petals) {
+          if (petal.cleared) continue;
 
-        scrubProgress.textContent = Math.round(pct * 100) + '% revealed';
+          const dx = petal.x - bx;
+          const dy = petal.y - by;
+          const dist = Math.sqrt(dx*dx + dy*dy);
 
-        if (pct > 0.1) {
-          heartReveal.classList.add('show');
-        }
-
-        if (pct >= revealThreshold && !revealed) {
-          revealed = true;
-          brushHint.classList.add('hidden');
-          scrubProgress.classList.add('hidden');
-          continueBtn.classList.add('show');
-          // Clear remaining cover with animation
-          fadeOutCover();
-        }
-      }
-
-      function fadeOutCover() {
-        let opacity = 1;
-        function step() {
-          opacity -= 0.03;
-          if (opacity <= 0) {
-            coverCanvas.style.display = 'none';
-            return;
+          if (dist < brushRadius) {
+            // Push petal away from brush
+            const angle = Math.atan2(dy, dx);
+            const force = (brushRadius - dist) / brushRadius;
+            const pushSpeed = force * 8 + 2;
+            petal.vx = Math.cos(angle) * pushSpeed + (Math.random() - 0.5) * 2;
+            petal.vy = Math.sin(angle) * pushSpeed + (Math.random() - 0.5) * 2;
+            petal.cleared = true;
+            petal.rotSpeed = (Math.random() - 0.5) * 0.15;
+            newlyCleared++;
           }
-          coverCanvas.style.opacity = opacity;
-          requestAnimationFrame(step);
         }
-        requestAnimationFrame(step);
+
+        if (newlyCleared > 0) {
+          clearedCount += newlyCleared;
+          const pct = clearedCount / petals.length;
+
+          if (pct >= 0.60 && !revealed) {
+            revealed = true;
+            brushHint.classList.add('hidden');
+            continueBtn.classList.add('show');
+
+            // Trigger orbit mode for remaining petals
+            orbitMode = true;
+            for (const petal of petals) {
+              if (!petal.cleared) {
+                petal.orbitAngle = Math.atan2(petal.y - cy, petal.x - cx);
+                petal.orbitSpeed = 0.02 + Math.random() * 0.03;
+                petal.orbitRadius = Math.sqrt((petal.x - cx)**2 + (petal.y - cy)**2);
+              }
+            }
+
+            // Confetti burst
+            spawnConfetti(120);
+            setTimeout(() => spawnConfetti(60), 300);
+            setTimeout(() => spawnConfetti(40), 600);
+          }
+        }
       }
 
-      coverCanvas.addEventListener('mousedown', (e) => { isDrawing = true; const p = getPos(e); scrub(p.x, p.y); });
-      coverCanvas.addEventListener('mousemove', (e) => { if (isDrawing) { const p = getPos(e); scrub(p.x, p.y); } });
-      coverCanvas.addEventListener('mouseup', () => isDrawing = false);
-      coverCanvas.addEventListener('mouseleave', () => isDrawing = false);
+      canvas.addEventListener('mousedown', (e) => { isDrawing = true; const p = getPos(e); brushAt(p.x, p.y); });
+      canvas.addEventListener('mousemove', (e) => { if (isDrawing) { const p = getPos(e); brushAt(p.x, p.y); } });
+      canvas.addEventListener('mouseup', () => isDrawing = false);
+      canvas.addEventListener('mouseleave', () => isDrawing = false);
+      canvas.addEventListener('touchstart', (e) => { e.preventDefault(); isDrawing = true; const p = getPos(e); brushAt(p.x, p.y); }, { passive: false });
+      canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (isDrawing) { const p = getPos(e); brushAt(p.x, p.y); } }, { passive: false });
+      canvas.addEventListener('touchend', () => isDrawing = false);
 
-      coverCanvas.addEventListener('touchstart', (e) => { e.preventDefault(); isDrawing = true; const p = getPos(e); scrub(p.x, p.y); }, { passive: false });
-      coverCanvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (isDrawing) { const p = getPos(e); scrub(p.x, p.y); } }, { passive: false });
-      coverCanvas.addEventListener('touchend', () => isDrawing = false);
+      // Draw a single petal shape
+      function drawPetal(ctx, x, y, w, h, angle, color, opacity) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.globalAlpha = opacity;
+
+        // Petal body (ellipse)
+        ctx.beginPath();
+        ctx.ellipse(0, 0, w/2, h/2, 0, 0, Math.PI * 2);
+        const grad = ctx.createRadialGradient(-w*0.15, -h*0.15, 0, 0, 0, Math.max(w, h)/2);
+        grad.addColorStop(0, shadeColor(color, 25));
+        grad.addColorStop(0.6, color);
+        grad.addColorStop(1, shadeColor(color, -35));
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // Vein line
+        ctx.beginPath();
+        ctx.moveTo(0, -h/2);
+        ctx.quadraticCurveTo(w*0.12, 0, 0, h/2);
+        ctx.strokeStyle = 'rgba(0,0,0,0.12)';
+        ctx.lineWidth = 0.7;
+        ctx.stroke();
+
+        // Edge highlight
+        ctx.beginPath();
+        ctx.ellipse(0, 0, w/2, h/2, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(255,255,255,${0.08 + Math.random()*0.06})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+
+        ctx.restore();
+      }
+
+      // Animation loop
+      function animate() {
+        if (!animating) return;
+
+        ctx.clearRect(0, 0, SIZE, SIZE);
+
+        // Draw champagne background where heart is (visible through hollow)
+        ctx.save();
+        ctx.fillStyle = '#FFF8E7';
+        ctx.fillRect(0, 0, SIZE, SIZE);
+        ctx.restore();
+
+        // Update and draw petals
+        for (const petal of petals) {
+          if (petal.cleared && !orbitMode) {
+            // Physics for cleared petals
+            petal.x += petal.vx;
+            petal.y += petal.vy;
+            petal.vx *= 0.96;
+            petal.vy *= 0.96;
+            petal.vy += 0.05; // slight gravity
+            petal.angle += petal.rotSpeed;
+            petal.opacity *= 0.985;
+
+            if (petal.opacity < 0.02) continue;
+          } else if (orbitMode && !petal.cleared) {
+            // Orbit animation for remaining petals
+            petal.orbitAngle += petal.orbitSpeed;
+            petal.orbitRadius *= 0.995; // slowly spiral inward then out
+            const targetX = cx + Math.cos(petal.orbitAngle) * petal.orbitRadius;
+            const targetY = cy + Math.sin(petal.orbitAngle) * petal.orbitRadius;
+            petal.x += (targetX - petal.x) * 0.05;
+            petal.y += (targetY - petal.y) * 0.05;
+            petal.angle += 0.03;
+            petal.opacity *= 0.992; // slowly fade
+
+            if (petal.opacity < 0.02) continue;
+          } else if (orbitMode && petal.cleared) {
+            // Already cleared petals continue drifting
+            petal.x += petal.vx * 0.5;
+            petal.y += petal.vy * 0.5;
+            petal.vy += 0.02;
+            petal.angle += petal.rotSpeed * 0.5;
+            petal.opacity *= 0.98;
+            if (petal.opacity < 0.02) continue;
+          }
+
+          drawPetal(ctx, petal.x, petal.y, petal.w, petal.h, petal.angle, petal.color, petal.opacity);
+        }
+
+        // Draw confetti
+        for (let i = confettiParticles.length - 1; i >= 0; i--) {
+          const c = confettiParticles[i];
+          c.x += c.vx;
+          c.y += c.vy;
+          c.vy += 0.08;
+          c.vx *= 0.99;
+          c.rotation += c.rotSpeed;
+          c.life -= c.decay;
+
+          if (c.life <= 0) {
+            confettiParticles.splice(i, 1);
+            continue;
+          }
+
+          ctx.save();
+          ctx.translate(c.x, c.y);
+          ctx.rotate(c.rotation);
+          ctx.globalAlpha = c.life;
+          ctx.fillStyle = c.color;
+          ctx.fillRect(-c.size/2, -c.size/4, c.size, c.size/2);
+          ctx.restore();
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
 
       // Continue button
       continueBtn.addEventListener('click', () => {
         overlay.classList.add('hidden');
-        document.getElementById('mainNav').classList.add('visible');
+        animating = false;
         AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 80 });
         setTimeout(() => overlay.style.display = 'none', 800);
-      });
-    })();
-
-    // ===========================
-    // NAV FADE ON SCROLL
-    // ===========================
-    (function() {
-      const nav = document.getElementById('mainNav');
-      let lastScroll = 0;
-      const heroHeight = window.innerHeight * 0.3;
-
-      window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-        if (scrollY > heroHeight) {
-          nav.classList.add('fading');
-          nav.classList.remove('visible');
-        } else {
-          nav.classList.remove('fading');
-          nav.classList.add('visible');
-        }
-        lastScroll = scrollY;
       });
     })();
 
@@ -1296,8 +1255,8 @@
       console.log('RSVP:', { name, email, attendance: form.querySelector('[name="attendance"]:checked').value });
     }
 
-    // Smooth scroll for nav
-    document.querySelectorAll('nav a').forEach(link => {
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
       link.addEventListener('click', e => {
         e.preventDefault();
         const target = document.querySelector(link.getAttribute('href'));
