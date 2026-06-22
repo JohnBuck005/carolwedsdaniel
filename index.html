@@ -185,6 +185,45 @@
       box-shadow: 0 8px 25px rgba(91, 26, 46, 0.3);
     }
 
+    /* Music toggle button */
+    .music-toggle {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 10001;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(91, 26, 46, 0.85);
+      border: 2px solid var(--gold);
+      color: var(--gold);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.4s ease;
+      backdrop-filter: blur(8px);
+    }
+    .music-toggle.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .music-toggle:hover {
+      background: var(--burgundy);
+      transform: scale(1.1);
+    }
+    .music-toggle .notes {
+      animation: musicPulse 1.2s ease-in-out infinite;
+    }
+    .music-toggle.muted .notes { animation: none; opacity: 0.5; }
+    @keyframes musicPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
     /* ===== HERO SECTION ===== */
     .hero {
       min-height: 100vh;
@@ -595,6 +634,13 @@
     <button class="std-continue" id="stdContinue">Enter Our Wedding</button>
   </div>
 
+  <!-- MUSIC TOGGLE -->
+  <button class="music-toggle" id="musicToggle" aria-label="Toggle music">
+    <span class="notes">🎵</span>
+  </button>
+  <!-- Hidden YouTube player -->
+  <div id="ytPlayer" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;"></div>
+
   <!-- HERO -->
   <section class="hero" id="home">
     <div data-aos="fade-down" data-aos-delay="200">
@@ -890,6 +936,76 @@
 
   <!-- SCRIPTS -->
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <!-- YouTube IFrame API for background music -->
+  <script>
+    var ytPlayer = null;
+    var musicReady = false;
+    var musicShouldPlay = false;
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(tag);
+
+    function onYouTubeIframeAPIReady() {
+      ytPlayer = new YT.Player('ytPlayer', {
+        height: '1',
+        width: '1',
+        videoId: 'j1JfXxEQSro',
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          modestbranding: 1,
+          rel: 0,
+          loop: 1,
+          playlist: 'j1JfXxEQSro'
+        },
+        events: {
+          onReady: function(e) {
+            musicReady = true;
+            e.target.setVolume(60);
+            if (musicShouldPlay) {
+              e.target.playVideo();
+              document.getElementById('musicToggle').classList.add('show');
+            }
+          },
+          onStateChange: function(e) {
+            var btn = document.getElementById('musicToggle');
+            if (e.data === YT.PlayerState.PLAYING) {
+              btn.classList.remove('muted');
+              btn.querySelector('.notes').textContent = '🎵';
+            } else if (e.data === YT.PlayerState.PAUSED) {
+              btn.classList.add('muted');
+              btn.querySelector('.notes').textContent = '🔇';
+            }
+          }
+        }
+      });
+    }
+
+    function startMusic() {
+      musicShouldPlay = true;
+      var btn = document.getElementById('musicToggle');
+      btn.classList.add('show');
+      if (musicReady && ytPlayer && ytPlayer.playVideo) {
+        ytPlayer.playVideo();
+      }
+    }
+
+    function toggleMusic() {
+      if (!ytPlayer || !musicReady) return;
+      var state = ytPlayer.getPlayerState();
+      if (state === YT.PlayerState.PLAYING) {
+        ytPlayer.pauseVideo();
+      } else {
+        ytPlayer.playVideo();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('musicToggle').addEventListener('click', toggleMusic);
+    });
+  </script>
   <script>
     // ===========================
     // SAVE THE DATE — HEART PETAL PARTICLE SYSTEM
@@ -1087,6 +1203,9 @@
             spawnConfetti(120);
             setTimeout(() => spawnConfetti(60), 300);
             setTimeout(() => spawnConfetti(40), 600);
+
+            // Start background music
+            startMusic();
           }
         }
       }
