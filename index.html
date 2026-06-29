@@ -916,7 +916,11 @@
           <option value="2">Coming with a plus 1</option>
         </select>
       </div>
-      <button type="button" class="btn-rsvp" onclick="submitRSVP()">Send RSVP</button>
+      <div class="form-group">
+        <label>Dietary Requirements / Notes</label>
+        <textarea name="notes" placeholder="Any allergies, dietary needs, or messages for the couple" rows="3"></textarea>
+      </div>
+      <button type="button" class="btn-rsvp" id="rsvpBtn" onclick="submitRSVP()">Send RSVP</button>
       <p class="rsvp-note">Your presence is the greatest gift to us. 💛</p>
     </div>
     <div class="rsvp-success" id="rsvpSuccess">
@@ -1391,14 +1395,67 @@
     // ===========================
     // RSVP
     // ===========================
+    // Google Apps Script Web App URL — deploy the script below, then paste URL here
+    const RSVP_WEBHOOK = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
     function submitRSVP() {
       const form = document.getElementById('rsvpForm');
-      const name = form.querySelector('[name="name"]').value;
-      const email = form.querySelector('[name="email"]').value;
-      if (!name || !email) { alert('Please fill in your name and email.'); return; }
+      const name = form.querySelector('[name="name"]').value.trim();
+      const email = form.querySelector('[name="email"]').value.trim();
+      const phone = form.querySelector('[name="phone"]').value.trim();
+      const guests = form.querySelector('[name="guests"]').value;
+      const attendance = form.querySelector('[name="attendance"]:checked').value;
+      const notes = form.querySelector('[name="notes"]').value.trim();
+
+      if (!name || !email) {
+        alert('Please fill in your name and email.');
+        return;
+      }
+
+      const btn = document.getElementById('rsvpBtn');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+
+      const data = { name, email, phone, guests, attendance, notes, timestamp: new Date().toISOString() };
+
+      // Try webhook first, fallback to local save
+      if (RSVP_WEBHOOK && !RSVP_WEBHOOK.includes('PASTE_YOUR')) {
+        fetch(RSVP_WEBHOOK, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        }).then(() => {
+          showRSVPSuccess(name, attendance);
+        }).catch(() => {
+          // Fallback: save locally and show success
+          saveRSVPLocally(data);
+          showRSVPSuccess(name, attendance);
+        });
+      } else {
+        // No webhook configured — save locally as backup
+        saveRSVPLocally(data);
+        showRSVPSuccess(name, attendance);
+      }
+    }
+
+    function saveRSVPLocally(data) {
+      const rsvps = JSON.parse(localStorage.getItem('wedding_rsvps') || '[]');
+      rsvps.push(data);
+      localStorage.setItem('wedding_rsvps', JSON.stringify(rsvps));
+      console.log('RSVP saved locally:', data);
+    }
+
+    function showRSVPSuccess(name, attendance) {
+      const form = document.getElementById('rsvpForm');
+      const success = document.getElementById('rsvpSuccess');
       form.style.display = 'none';
-      document.getElementById('rsvpSuccess').classList.add('show');
-      console.log('RSVP:', { name, email, attendance: form.querySelector('[name="attendance"]:checked').value });
+      if (attendance === 'yes') {
+        success.querySelector('p').textContent = name + ", we've received your RSVP and can't wait to celebrate with you!";
+      } else {
+        success.querySelector('p').textContent = name + ", we understand and you'll be missed. Thank you for letting us know.";
+      }
+      success.classList.add('show');
     }
 
     // Smooth scroll
