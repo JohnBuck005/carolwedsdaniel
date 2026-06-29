@@ -1395,8 +1395,8 @@
     // ===========================
     // RSVP
     // ===========================
-    // Google Apps Script Web App URL — deploy the script below, then paste URL here
-    const RSVP_WEBHOOK = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+    // RSVP — sends directly to your email, no backend needed
+    const RSVP_EMAIL = 'Danzafx@gmail.com';
 
     function submitRSVP() {
       const form = document.getElementById('rsvpForm');
@@ -1416,27 +1416,28 @@
       btn.textContent = 'Sending...';
       btn.disabled = true;
 
-      const data = { name, email, phone, guests, attendance, notes, timestamp: new Date().toISOString() };
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('phone', phone);
+      formData.append('guests', guests);
+      formData.append('attendance', attendance);
+      formData.append('notes', notes);
+      formData.append('_subject', `Wedding RSVP: ${name} — ${attendance === 'yes' ? 'Accepts ✅' : 'Declines ❌'}`);
+      formData.append('_template', 'table');
+      formData.append('_captcha', 'false');
 
-      // Try webhook first, fallback to local save
-      if (RSVP_WEBHOOK && !RSVP_WEBHOOK.includes('PASTE_YOUR')) {
-        fetch(RSVP_WEBHOOK, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        }).then(() => {
-          showRSVPSuccess(name, attendance);
-        }).catch(() => {
-          // Fallback: save locally and show success
-          saveRSVPLocally(data);
-          showRSVPSuccess(name, attendance);
-        });
-      } else {
-        // No webhook configured — save locally as backup
-        saveRSVPLocally(data);
+      fetch(`https://formsubmit.co/ajax/${RSVP_EMAIL}`, {
+        method: 'POST',
+        body: formData
+      })
+      .then(r => r.json())
+      .then(() => showRSVPSuccess(name, attendance))
+      .catch(() => {
+        // Fallback: save locally
+        saveRSVPLocally({ name, email, phone, guests, attendance, notes, timestamp: new Date().toISOString() });
         showRSVPSuccess(name, attendance);
-      }
+      });
     }
 
     function saveRSVPLocally(data) {
