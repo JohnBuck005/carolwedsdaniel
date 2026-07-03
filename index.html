@@ -39,162 +39,174 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ===== ENVELOPE INTRO OVERLAY ===== */
-    .envelope-intro {
+    /* ===== ANIMATED ENVELOPE INTRO ===== */
+    #envelopeIntro {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: #000;
+      background: #1a1410;
       z-index: 9999;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      font-family: 'Cinzel', 'Georgia', serif;
+      padding: 20px;
       transition: opacity 1.4s ease;
-      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
     }
-    .envelope-img {
-      width: 100%;
-      max-width: 440px;
-      display: block;
-      object-fit: contain;
-    }
-    .envelope-intro.fade-out {
+    #envelopeIntro.fade-out {
       opacity: 0;
       pointer-events: none;
     }
-
-    /* Envelope card */
-    .envelope-card {
+    .envelope-wrapper {
+      width: 100%;
+      max-width: 600px;
+      aspect-ratio: 4 / 3;
+      perspective: 1200px;
+      cursor: pointer;
       position: relative;
-      width: min(400px, 88vw);
-      padding: 3rem 2rem 2.5rem;
-      background: linear-gradient(160deg, #FFFDF5 0%, #F6EBD5 100%);
-      border: 1.5px solid #a67d2b;
-      border-radius: 3px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      box-shadow:
-        0 8px 40px rgba(166, 125, 43, 0.12),
-        inset 0 0 60px rgba(166, 125, 43, 0.03);
-      animation: envelopeFloat 4s ease-in-out infinite;
+      align-items: center;
     }
-    @keyframes envelopeFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
+    .envelope {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: #d8c8b0;
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      transition: box-shadow 0.4s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transform-style: preserve-3d;
     }
-    /* Inner decorative border */
-    .envelope-card::before {
-      content: '';
+    .envelope.glow {
+      box-shadow: 0 0 50px 15px rgba(255, 215, 140, 0.5);
+    }
+    .flap {
       position: absolute;
-      inset: 8px;
-      border: 1px solid rgba(166, 125, 43, 0.2);
-      border-radius: 2px;
+      top: 0; left: 0;
+      width: 100%; height: 55%;
+      background: #d8c8b0;
+      border-radius: 18px 18px 0 0;
+      transform-origin: bottom center;
+      transition: transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+      z-index: 10;
+      box-shadow: inset 0 -6px 12px rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 3px solid #c4b09a;
       pointer-events: none;
     }
-    /* Corner flourishes */
-    .envelope-card::after {
-      content: '';
+    .envelope.open .flap {
+      transform: rotateX(180deg) translateY(8px);
+    }
+    .seal {
       position: absolute;
-      inset: 14px;
-      border: none;
-      background:
-        radial-gradient(circle at 0% 0%, #a67d2b 1px, transparent 1px),
-        radial-gradient(circle at 100% 0%, #a67d2b 1px, transparent 1px),
-        radial-gradient(circle at 0% 100%, #a67d2b 1px, transparent 1px),
-        radial-gradient(circle at 100% 100%, #a67d2b 1px, transparent 1px);
-      pointer-events: none;
-    }
-
-    .envelope-content {
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .envelope-names {
-      font-family: 'Great Vibes', cursive;
-      font-size: clamp(2rem, 7vw, 3.2rem);
-      color: #a67d2b;
-      line-height: 1.3;
-    }
-
-    .envelope-date {
-      font-family: 'Cinzel', serif;
-      font-size: clamp(0.8rem, 2.2vw, 1rem);
-      color: #5A0F1B;
-      letter-spacing: 4px;
-      margin-top: 0.2rem;
-    }
-
-    /* Wax seal */
-    .wax-seal {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #9E2850, #5A0F1B 55%, #3D0F1E);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow:
-        0 2px 12px rgba(90, 15, 27, 0.45),
-        inset 0 -2px 4px rgba(0,0,0,0.2);
-      margin: 0.8rem 0;
-      position: relative;
-    }
-    .wax-seal::before {
-      content: 'C & D';
-      font-family: 'Cinzel', serif;
-      font-size: 0.6rem;
-      color: #C9A84C;
-      letter-spacing: 1.5px;
-      font-weight: 500;
-    }
-
-    /* Tap to open */
-    .tap-to-open {
-      position: absolute;
-      bottom: 30%;
+      top: 28%;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle at 40% 35%, #b8863a, #7a4e1a);
+      border-radius: 50%;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 -4px 8px rgba(0,0,0,0.3), inset 0 4px 10px rgba(255,215,140,0.4);
+      z-index: 20;
+      transition: box-shadow 0.4s ease, transform 0.3s ease;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 22px;
+      color: #f7e7d0;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+    .seal.glow {
+      box-shadow: 0 0 50px 20px rgba(255, 200, 100, 0.8), 0 0 120px 60px rgba(255, 180, 80, 0.3);
+      transform: translate(-50%, -50%) scale(1.02);
+    }
+    .envelope-content {
+      position: absolute;
+      top: 10%; left: 10%;
+      width: 80%; height: 70%;
+      background: #fbf6ed;
+      border-radius: 12px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
-      gap: 7px;
-      animation: tapIn 1.2s 0.8s both;
+      text-align: center;
+      box-shadow: inset 0 0 0 2px #e4d5c0, 0 8px 30px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: scale(0.92) translateY(20px);
+      transition: opacity 0.7s ease 0.5s, transform 0.7s cubic-bezier(0.23, 1, 0.32, 1) 0.5s;
+      pointer-events: none;
+      z-index: 5;
+      color: #2e241e;
+      line-height: 1.5;
     }
-    @keyframes tapIn {
-      from { opacity: 0; transform: translateX(-50%) translateY(6px); }
-      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .envelope.open .envelope-content {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
     }
-    .tap-text {
+    .envelope-content .names {
+      font-size: clamp(2rem, 8vw, 3.8rem);
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: #2e1f14;
+      margin-bottom: 8px;
       font-family: 'Cinzel', serif;
-      font-size: 11px;
-      letter-spacing: 0.26em;
+    }
+    .envelope-content .ampersand {
+      font-size: clamp(2.2rem, 7vw, 3.6rem);
+      color: #b8863a;
+      font-weight: 300;
+      margin: 4px 0;
+    }
+    .envelope-content .sub {
+      font-size: clamp(0.9rem, 2.5vw, 1.3rem);
+      letter-spacing: 6px;
+      color: #7a5f4a;
       text-transform: uppercase;
-      color: rgba(140, 100, 60, 0.75);
-      animation: breathe 2.4s 1.6s ease-in-out infinite;
-      white-space: nowrap;
+      border-top: 1px solid #d4c0ab;
+      padding-top: 12px;
+      margin-top: 6px;
+      font-weight: 400;
     }
-    @keyframes breathe {
-      0%, 100% { letter-spacing: 3px; opacity: 0.55; }
-      50% { letter-spacing: 8px; opacity: 1; }
+    .envelope-content .divider {
+      width: 60px;
+      height: 2px;
+      background: #b8863a;
+      margin: 8px auto;
+      opacity: 0.5;
     }
-    .tap-chevron {
-      width: 10px;
-      height: 10px;
-      border-right: 1.5px solid rgba(140, 100, 60, 0.6);
-      border-top: 1.5px solid rgba(140, 100, 60, 0.6);
-      transform: rotate(-45deg);
-      animation: pulseDown 2.4s 1.9s ease-in-out infinite;
+    .click-hint {
+      position: absolute;
+      bottom: 12px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      color: #b8a692;
+      font-size: 13px;
+      letter-spacing: 2px;
+      opacity: 0.7;
+      z-index: 30;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
     }
-    @keyframes pulseDown {
-      0%, 100% { transform: translateY(0); opacity: 0.35; }
-      50% { transform: translateY(5px); opacity: 1; }
+    .envelope.open .click-hint {
+      opacity: 0;
+    }
+    @media (max-width: 500px) {
+      .seal { width: 60px; height: 60px; top: 26%; }
+      .envelope-content { padding: 16px; }
     }
 
     /* ===== REVEAL SEQUENCE ===== */
@@ -712,24 +724,23 @@
 </head>
 <body>
 
-  <!-- ENVELOPE INTRO OVERLAY -->
-  <div class="envelope-intro" id="envelopeIntro">
-    <img class="envelope-img" src="envelope-cd.jpg" alt="Wedding Invitation" draggable="false">
-    <div class="tap-to-open">
-      <span class="tap-text">Tap to open</span>
-      <div class="tap-chevron"></div>
+  <!-- ANIMATED ENVELOPE INTRO -->
+  <div id="envelopeIntro">
+    <div class="envelope-wrapper" id="envelopeWrapper">
+      <div class="envelope" id="envelope">
+        <div class="flap"></div>
+        <div class="seal" id="seal">C &amp; D</div>
+        <div class="envelope-content">
+          <div class="names">Caroline</div>
+          <div class="ampersand">&amp;</div>
+          <div class="names" style="font-size: clamp(1.8rem, 7vw, 3.4rem);">Daniel</div>
+          <div class="divider"></div>
+          <div class="sub">08 · 08 · 2026</div>
+          <div style="font-size: 14px; color: #a2856b; margin-top: 4px; letter-spacing: 2px;">Grace Arena Ministries, Nairobi</div>
+        </div>
+        <div class="click-hint">&#10022; tap to open &#10022;</div>
+      </div>
     </div>
-  </div>
-
-  <!-- REVEAL SEQUENCE OVERLAY -->
-  <div class="reveal-overlay" id="revealOverlay">
-    <div class="reveal-ornament reveal-item" data-reveal="0"></div>
-    <p class="reveal-main-name reveal-item" data-reveal="1">Caroline &amp; Daniel</p>
-    <p class="reveal-script reveal-item" data-reveal="2">request the pleasure of your company</p>
-    <p class="reveal-script reveal-item" data-reveal="3">at their Wedding Celebration</p>
-    <p class="reveal-venue reveal-item" data-reveal="4">Grace Arena Ministries, Nairobi</p>
-    <p class="reveal-date-text reveal-item" data-reveal="5">08 · 08 · 2026</p>
-    <div class="reveal-ornament reveal-item" data-reveal="6"></div>
   </div>
 
   <!-- MUSIC TOGGLE -->
@@ -1131,47 +1142,53 @@
   </script>
   <script>
     // ===========================
-    // ENVELOPE INTRO SYSTEM
+    // ANIMATED ENVELOPE INTRO
     // ===========================
     (function() {
-      var envelope = document.getElementById('envelopeIntro');
-      var revealOverlay = document.getElementById('revealOverlay');
-      var revealItems = revealOverlay.querySelectorAll('.reveal-item');
+      var intro = document.getElementById('envelopeIntro');
+      var wrapper = document.getElementById('envelopeWrapper');
+      var envelope = document.getElementById('envelope');
+      var seal = document.getElementById('seal');
+      var isOpen = false;
 
       function openEnvelope() {
-        envelope.removeEventListener('click', openEnvelope);
-        envelope.style.cursor = 'default';
+        if (isOpen) return;
+        isOpen = true;
 
-        // Stage 2: Fade out envelope
-        envelope.classList.add('fade-out');
+        // 1. Glow the seal
+        seal.classList.add('glow');
 
+        // 2. Open the envelope flap
         setTimeout(function() {
-          envelope.style.display = 'none';
-          revealOverlay.classList.add('active');
+          envelope.classList.add('open');
+          envelope.classList.add('glow');
+        }, 200);
 
-          // Stagger reveal items with 600ms delay each
-          revealItems.forEach(function(item, i) {
-            setTimeout(function() {
-              item.classList.add('visible');
-            }, 400 + i * 600);
-          });
+        // 3. Remove seal glow
+        setTimeout(function() {
+          seal.classList.remove('glow');
+        }, 900);
 
-          // After all items shown, wait 2s, then fade out
-          var totalTime = 400 + revealItems.length * 600 + 2000;
+        // 4. After content is visible, fade out and show main page
+        setTimeout(function() {
+          intro.classList.add('fade-out');
           setTimeout(function() {
-            revealOverlay.classList.add('fade-out');
-
-            // Stage 3: Show main page
-            setTimeout(function() {
-              revealOverlay.style.display = 'none';
-              AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 80 });
-              startMusic();
-            }, 1400);
-          }, totalTime);
-        }, 1400);
+            intro.style.display = 'none';
+            AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 80 });
+            startMusic();
+          }, 1400);
+        }, 4000);
       }
 
-      envelope.addEventListener('click', openEnvelope);
+      wrapper.addEventListener('click', openEnvelope);
+      wrapper.setAttribute('role', 'button');
+      wrapper.setAttribute('tabindex', '0');
+      wrapper.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openEnvelope();
+        }
+      });
     })();
 
     // ===========================
