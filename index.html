@@ -618,14 +618,14 @@
 
   <!-- SAVE THE DATE OVERLAY -->
   <div class="save-the-date" id="saveTheDate">
-    <p class="std-label">Save the Date</p>
-    <p class="std-date-info">Daniel & Caroline · August 8, 2026</p>
+    <p class="std-label">You Are Invited</p>
+    <p class="std-date-info">Caroline & Daniel · August 8, 2026</p>
 
     <div class="heart-container">
       <!-- Text visible through hollow center -->
       <div class="heart-reveal" id="heartReveal">
-        <div class="reveal-save">Save the Date</div>
-        <div class="reveal-names">Daniel & Caroline</div>
+        <div class="reveal-save">Caroline & Daniel</div>
+        <div class="reveal-names">Wedding</div>
         <div class="reveal-date">08 · 08 · 2026</div>
       </div>
       <canvas id="petalCanvas"></canvas>
@@ -1088,8 +1088,8 @@
       // Heart center and scale
       const cx = SIZE / 2;
       const cy = SIZE * 0.44;
-      const heartScale = SIZE * 0.42;
-      const hollowRadius = heartScale * 0.30; // 30% hollow center
+      const heartScale = SIZE * 0.50;
+      const hollowRadius = heartScale * 0.00; // No hollow center — fully covered
 
       // Petal colors
       const petalColors = [
@@ -1101,7 +1101,7 @@
 
       // Generate petal particles in heart shape with hollow center
       const petals = [];
-      const TARGET_PETALS = 320;
+      const TARGET_PETALS = 600;
       let attempts = 0;
       const maxAttempts = 50000;
 
