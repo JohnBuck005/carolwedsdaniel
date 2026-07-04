@@ -10,7 +10,7 @@
   body {
     width: 1080px;
     height: 1920px;
-    background: #F5EDE3;
+    background: #5A0F1B;
     font-family: 'Cormorant Garamond', serif;
     display: flex;
     justify-content: center;
@@ -21,7 +21,7 @@
   .card {
     width: 1080px;
     height: 1920px;
-    background: linear-gradient(180deg, #F5EDE3 0%, #EDE4D8 50%, #F5EDE3 100%);
+    background: #5A0F1B;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -30,275 +30,87 @@
     padding: 80px 100px;
   }
 
-  /* Border frame */
-  .frame {
-    position: absolute;
-    top: 40px;
-    left: 40px;
-    right: 40px;
-    bottom: 40px;
-    border: 2px solid #C4703F;
-    border-radius: 8px;
-  }
-  .frame-inner {
-    position: absolute;
-    top: 55px;
-    left: 55px;
-    right: 55px;
-    bottom: 55px;
-    border: 1px solid rgba(196, 112, 63, 0.3);
-    border-radius: 6px;
-  }
-
-  /* Corner ornaments */
-  .corner {
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    opacity: 0.6;
-  }
-  .corner svg { width: 100%; height: 100%; }
-  .corner-tl { top: 60px; left: 60px; }
-  .corner-tr { top: 60px; right: 60px; transform: scaleX(-1); }
-  .corner-bl { bottom: 60px; left: 60px; transform: scaleY(-1); }
-  .corner-br { bottom: 60px; right: 60px; transform: scale(-1, -1); }
-
-  /* Top ornament */
-  .top-ornament {
-    margin-bottom: 50px;
-    color: #C4703F;
-    font-size: 48px;
-    letter-spacing: 20px;
-    opacity: 0.7;
-  }
-
-  /* We invite you */
-  .invite-text {
+  /* Date */
+  .date-top {
     font-family: 'Montserrat', sans-serif;
     font-weight: 300;
-    font-size: 22px;
-    letter-spacing: 10px;
+    font-size: 32px;
+    letter-spacing: 12px;
     text-transform: uppercase;
-    color: #9B6B4A;
-    margin-bottom: 30px;
+    color: #C9A84C;
+    margin-bottom: 20px;
+  }
+
+  /* Decorative line */
+  .top-line {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 50px;
+    color: #C9A84C;
+    font-size: 20px;
+    letter-spacing: 8px;
+    opacity: 0.8;
   }
 
   /* Names */
   .names {
     font-family: 'Great Vibes', cursive;
-    font-size: 110px;
-    color: #C4703F;
-    line-height: 1.2;
+    font-size: 130px;
+    color: #FFFFFF;
+    line-height: 1.15;
     text-align: center;
     margin-bottom: 10px;
   }
   .ampersand {
     font-family: 'Great Vibes', cursive;
-    font-size: 80px;
-    color: #D4956A;
+    font-size: 90px;
+    color: #C9A84C;
     display: block;
-    margin: -10px 0;
+    margin: -5px 0;
   }
 
-  /* Divider */
-  .divider {
+  /* Decorative line below names */
+  .bottom-line {
     display: flex;
     align-items: center;
-    gap: 20px;
-    margin: 35px 0;
-    width: 400px;
-  }
-  .divider-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #C4703F, transparent);
-  }
-  .divider-diamond {
-    color: #C4703F;
-    font-size: 16px;
-  }
-
-  /* Getting married */
-  .subtitle {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 300;
-    font-size: 24px;
+    gap: 15px;
+    margin: 35px 0 50px;
+    color: #C9A84C;
+    font-size: 20px;
     letter-spacing: 8px;
-    text-transform: uppercase;
-    color: #8B6B4A;
-    margin-bottom: 50px;
+    opacity: 0.8;
   }
 
-  /* Date */
-  .date-label {
+  /* Wedding day label */
+  .wedding-label {
     font-family: 'Montserrat', sans-serif;
-    font-weight: 400;
-    font-size: 18px;
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    color: #9B6B4A;
-    margin-bottom: 12px;
-  }
-  .date {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 500;
-    font-size: 42px;
-    color: #5B3A1A;
-    margin-bottom: 8px;
-  }
-  .time {
-    font-family: 'Cormorant Garamond', serif;
     font-weight: 300;
-    font-size: 28px;
-    color: #8B6B4A;
+    font-size: 26px;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    color: #C9A84C;
     margin-bottom: 40px;
   }
 
   /* Venue */
-  .venue-label {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 400;
-    font-size: 18px;
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    color: #9B6B4A;
-    margin-bottom: 12px;
-  }
   .venue {
     font-family: 'Cormorant Garamond', serif;
-    font-weight: 500;
-    font-size: 36px;
-    color: #5B3A1A;
-    text-align: center;
-    line-height: 1.4;
-    margin-bottom: 8px;
-  }
-  .venue-location {
-    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
     font-weight: 300;
-    font-size: 26px;
-    color: #8B6B4A;
-    margin-bottom: 50px;
-  }
-
-  /* RSVP Box */
-  .rsvp-box {
-    background: rgba(196, 112, 63, 0.08);
-    border: 1px solid rgba(196, 112, 63, 0.25);
-    border-radius: 8px;
-    padding: 30px 50px;
-    text-align: center;
-    margin-bottom: 35px;
-  }
-  .rsvp-title {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    font-size: 18px;
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    color: #C4703F;
-    margin-bottom: 10px;
-  }
-  .rsvp-url {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 400;
-    font-size: 24px;
-    color: #5B3A1A;
-  }
-  .rsvp-date {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    color: #9B6B4A;
-    margin-top: 8px;
-  }
-
-  /* M-Pesa */
-  .mpesa {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  .mpesa-label {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 400;
-    font-size: 15px;
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    color: #9B6B4A;
-    margin-bottom: 8px;
-  }
-  .mpesa-number {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 500;
     font-size: 30px;
-    color: #5B3A1A;
-  }
-  .mpesa-note {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 300;
-    font-size: 14px;
-    color: #A08060;
-    margin-top: 5px;
-  }
-
-  /* Bottom ornament */
-  .bottom-ornament {
-    margin-top: 20px;
-    color: #C4703F;
-    font-size: 36px;
-    letter-spacing: 15px;
-    opacity: 0.5;
-  }
-
-  /* Footer text */
-  .footer {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    letter-spacing: 4px;
-    color: #A08060;
-    margin-top: 25px;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    letter-spacing: 2px;
   }
 </style>
 </head>
 <body>
   <div class="card">
-    <div class="frame"></div>
-    <div class="frame-inner"></div>
 
-    <!-- Corner ornaments -->
-    <div class="corner corner-tl">
-      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 110 Q10 60 35 35 Q60 10 110 10" stroke="#C4703F" stroke-width="1.5" fill="none"/>
-        <path d="M10 90 Q10 50 30 30 Q50 10 90 10" stroke="#C4703F" stroke-width="1" fill="none" opacity="0.5"/>
-        <circle cx="35" cy="35" r="3" fill="#C4703F" opacity="0.4"/>
-      </svg>
-    </div>
-    <div class="corner corner-tr">
-      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 110 Q10 60 35 35 Q60 10 110 10" stroke="#C4703F" stroke-width="1.5" fill="none"/>
-        <path d="M10 90 Q10 50 30 30 Q50 10 90 10" stroke="#C4703F" stroke-width="1" fill="none" opacity="0.5"/>
-        <circle cx="35" cy="35" r="3" fill="#C4703F" opacity="0.4"/>
-      </svg>
-    </div>
-    <div class="corner corner-bl">
-      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 110 Q10 60 35 35 Q60 10 110 10" stroke="#C4703F" stroke-width="1.5" fill="none"/>
-        <path d="M10 90 Q10 50 30 30 Q50 10 90 10" stroke="#C4703F" stroke-width="1" fill="none" opacity="0.5"/>
-        <circle cx="35" cy="35" r="3" fill="#C4703F" opacity="0.4"/>
-      </svg>
-    </div>
-    <div class="corner corner-br">
-      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 110 Q10 60 35 35 Q60 10 110 10" stroke="#C4703F" stroke-width="1.5" fill="none"/>
-        <path d="M10 90 Q10 50 30 30 Q50 10 90 10" stroke="#C4703F" stroke-width="1" fill="none" opacity="0.5"/>
-        <circle cx="35" cy="35" r="3" fill="#C4703F" opacity="0.4"/>
-      </svg>
-    </div>
+    <div class="date-top">08 — 08 — 2026</div>
 
-    <div class="top-ornament">✦ ✦ ✦</div>
-
-    <div class="invite-text">We invite you to celebrate</div>
+    <div class="top-line">— ————— —</div>
 
     <div class="names">
       Caroline
@@ -306,36 +118,12 @@
       Daniel
     </div>
 
-    <div class="divider">
-      <div class="divider-line"></div>
-      <div class="divider-diamond">◆</div>
-      <div class="divider-line"></div>
-    </div>
+    <div class="bottom-line">— ————————— —</div>
 
-    <div class="subtitle">Are getting married</div>
+    <div class="wedding-label">Wedding Day</div>
 
-    <div class="date-label">Date</div>
-    <div class="date">Saturday, 8th August 2026</div>
-    <div class="time">Ceremony begins at 10:00 AM</div>
+    <div class="venue">Bethsaida Park, Kikuyu</div>
 
-    <div class="venue-label">Venue</div>
-    <div class="venue">Bethsaida Park</div>
-    <div class="venue-location">Kikuyu, Kenya</div>
-
-    <div class="rsvp-box">
-      <div class="rsvp-title">RSVP &amp; Details</div>
-      <div class="rsvp-url">carolwedsdaniel.github.io/carolwedsdaniel</div>
-      <div class="rsvp-date">Kindly respond by 15th July 2026</div>
-    </div>
-
-    <div class="mpesa">
-      <div class="mpesa-label">M-Pesa Gift</div>
-      <div class="mpesa-number">+254 725 265901</div>
-      <div class="mpesa-note">Send directly via M-Pesa</div>
-    </div>
-
-    <div class="bottom-ornament">♥ ♥ ♥</div>
-    <div class="footer">Your presence is the greatest gift</div>
   </div>
 </body>
 </html>
